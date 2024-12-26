@@ -5,6 +5,9 @@ import 'package:cinemapedia_app/features/cinema/domain/repositories/movie_reposi
 /// ### Movie Repository Implementation
 /// It is the implementation of the [MoviesRepository] interface.
 ///
+/// #### Properties:
+/// - [datasource] : It is the datasource that is used to get the data.
+///
 /// #### Methods:
 /// - [getNowPlaying] : It is used to get the list of movies that are now playing in the cinema.
 ///
