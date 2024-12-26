@@ -16,7 +16,7 @@ import 'package:cinemapedia_app/features/cinema/infrastructure/models/movie_resp
 ///
 /// #### Author:
 /// Gonzalo Quedena
-class MovieDatasourceImpl implements MoviesDatasource {
+class MovieDatasourceImpl extends MoviesDatasource {
   final dio = Dio(
     BaseOptions(
       baseUrl: ApiConstants.baseUrl,
