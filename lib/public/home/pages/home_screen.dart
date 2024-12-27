@@ -1,3 +1,4 @@
+import 'package:cinemapedia_app/features/cinema/presentation/pages/cinema_page.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -8,7 +9,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const Placeholder(),
+      body: const CinemaPage(),
     );
   }
 }
