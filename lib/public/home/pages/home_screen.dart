@@ -13,7 +13,6 @@ class HomeScreen extends StatelessWidget {
       body: Column(
         children: [
           CustomAppbar(),
-          
           Expanded(
             child: const CinemaPage(),
           )

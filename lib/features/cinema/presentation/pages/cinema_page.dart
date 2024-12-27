@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:cinemapedia_app/features/cinema/application/providers/movies_provider.dart';
+import 'package:cinemapedia_app/features/cinema/presentation/widgets/movies_slide_show.dart';
 import 'package:cinemapedia_app/features/cinema/presentation/controllers/cinema_controller.dart';
-import '../widgets/movie_list.dart';
 
 /// ### Cinema Page
 /// This page is the main page of the app, it shows the list of movies that are currently playing in theaters.
@@ -9,9 +11,10 @@ import '../widgets/movie_list.dart';
 /// #### Properties:
 /// - [name]: The name of the page.
 /// 
-/// 
+/// #### Author:
+/// Gonzalo Quedena
 class CinemaPage extends StatelessWidget {
-  static const name = 'home-screen';
+  static const name = 'cinema-page';
 
   const CinemaPage({super.key});
 
@@ -47,18 +50,19 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
   void initState() {
     super.initState();
     ref.read(cinemaControllerProvider.notifier).loadMovies();
+    ref.read(cinemaControllerProvider.notifier).loadSlideMovies();
   }
 
   @override
   Widget build(BuildContext context) {
-    final nowPlayingMovies = ref.watch(cinemaControllerProvider);
+    final slideShowMovies = ref.watch(slideShowMoviesProvider);
 
-    print('Building CinemaView with ${nowPlayingMovies.length} movies');
+    print('Building CinemaView with ${slideShowMovies.length} movies');
 
-    if (nowPlayingMovies.isEmpty) {
+    if (slideShowMovies.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return MovieList(movies: nowPlayingMovies);
+    return MoviesSlideShow(movies: slideShowMovies);
   }
 }
