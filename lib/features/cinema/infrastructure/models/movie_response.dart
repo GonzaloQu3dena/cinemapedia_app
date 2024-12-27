@@ -33,7 +33,7 @@ class MovieResponse {
 
   /// It creates a [MovieResponse] object from a json.
   factory MovieResponse.fromJson(Map<String, dynamic> json) => MovieResponse(
-        dates: json["dates"] ? Dates.fromJson(json["dates"]) : null,
+        dates: json["dates"] != null ? Dates.fromJson(json["dates"]) : null,
         page: json["page"],
         results: List<MovieModel>.from(
           json["results"].map((x) => MovieModel.fromJson(x)),
