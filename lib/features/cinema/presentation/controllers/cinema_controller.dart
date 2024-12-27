@@ -39,4 +39,12 @@ class CinemaController extends StateNotifier<List<Movie>> {
     state = _ref.read(nowPlayingMoviesProvider);
     print('Movies loaded: ${state.length}');
   }
+
+  /// Loads the slide movies from the API.
+  Future<void> loadSlideMovies() async {
+    print('Loading slide movies...');
+    await _ref.read(slideShowMoviesProvider.notifier).loadSlideShowMovies();
+    state = _ref.read(slideShowMoviesProvider);
+    print('Slide movies loaded: ${state.length}');
+  }
 }
