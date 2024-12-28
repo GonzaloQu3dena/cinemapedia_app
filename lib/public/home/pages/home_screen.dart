@@ -1,3 +1,4 @@
+import 'package:cinemapedia_app/public/home/widgets/custom_bottom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:cinemapedia_app/public/home/widgets/custom_appbar.dart';
 import 'package:cinemapedia_app/features/cinema/presentation/pages/cinema_page.dart';
@@ -18,6 +19,7 @@ class HomeScreen extends StatelessWidget {
           )
         ],
       ),
+      bottomNavigationBar: CustomBottomNavigation(),
     );
   }
 }
