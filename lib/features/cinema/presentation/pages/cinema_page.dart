@@ -76,7 +76,7 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
 
         //* In theaters
         SliverToBoxAdapter(
-          child: MovieHorizontalListview(
+          child: MovieHorizontalListView(
             movies: nowPlayingMovies,
             title: 'In theaters',
             subTitle: 'Monday 20th',

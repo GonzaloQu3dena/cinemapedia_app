@@ -15,13 +15,13 @@ import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
 ///
 /// #### Author:
 /// Gonzalo Quedena
-class MovieHorizontalListview extends StatefulWidget {
+class MovieHorizontalListView extends StatefulWidget {
   final List<Movie> movies;
   final String? title;
   final String? subTitle;
   final VoidCallback? loadNextPage;
 
-  const MovieHorizontalListview({
+  const MovieHorizontalListView({
     super.key,
     required this.movies,
     this.title,
@@ -30,12 +30,12 @@ class MovieHorizontalListview extends StatefulWidget {
   });
 
   @override
-  State<MovieHorizontalListview> createState() =>
-      _MovieHorizontalListviewState();
+  State<MovieHorizontalListView> createState() =>
+      _MovieHorizontalListViewState();
 }
 
 /// ### Movie Horizontal Listview State
-/// It's the state of the [MovieHorizontalListview] widget. It has a scroll controller to listen the scroll events.
+/// It's the state of the [MovieHorizontalListView] widget. It has a scroll controller to listen the scroll events.
 ///
 /// #### Properties:
 /// - [scrollController]: Scroll controller to listen the scroll events.
@@ -46,7 +46,7 @@ class MovieHorizontalListview extends StatefulWidget {
 ///
 /// #### Author:
 /// Gonzalo Quedena
-class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
+class _MovieHorizontalListViewState extends State<MovieHorizontalListView> {
   final scrollController = ScrollController();
 
   @override
@@ -82,12 +82,10 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
       child: Column(
         children: [
           if (widget.title != null || widget.subTitle != null)
-          
             _Title(
               title: widget.title,
               subTitle: widget.subTitle,
             ),
-
           Expanded(
             child: ListView.builder(
               controller: scrollController,
@@ -108,7 +106,7 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
 }
 
 /// ### Slide
-/// It's a slide that shows a movie. It has the movie poster, title, rating and popularity. It's used in the [MovieHorizontalListview].
+/// It's a slide that shows a movie. It has the movie poster, title, rating and popularity. It's used in the [MovieHorizontalListView].
 ///
 /// #### Properties:
 /// - [movie]: Movie to show.
@@ -127,7 +125,6 @@ class _Slide extends StatelessWidget {
     /// Return the slide. It has the movie poster, title, rating and popularity.
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -144,7 +141,6 @@ class _Slide extends StatelessWidget {
                   if (loadingProgress != null) {
                     return const Padding(
                       padding: EdgeInsets.all(8.0),
-                      
                       child: Center(
                         child: CircularProgressIndicator(strokeWidth: 2),
                       ),
@@ -171,24 +167,19 @@ class _Slide extends StatelessWidget {
           //* Rating
           SizedBox(
             width: 150,
-
             child: Row(
               children: [
                 Icon(
                   Icons.star_half_outlined,
                   color: Colors.yellow.shade800,
                 ),
-                
                 const SizedBox(width: 3),
-
                 Text(
                   '${movie.voteAverage}',
                   style: textStyles.bodyMedium
                       ?.copyWith(color: Colors.yellow.shade800),
                 ),
-
                 const Spacer(),
-
                 Text(
                   HumanFormats.number(movie.popularity.value),
                   style: textStyles.bodySmall,
@@ -203,7 +194,7 @@ class _Slide extends StatelessWidget {
 }
 
 /// ### Title
-/// It's a title that shows a title and a subtitle. It's used in the [MovieHorizontalListview].
+/// It's a title that shows a title and a subtitle. It's used in the [MovieHorizontalListView].
 ///
 /// #### Properties:
 /// - [title]: Title of the listview.
@@ -224,7 +215,6 @@ class _Title extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 10),
       margin: const EdgeInsets.symmetric(horizontal: 10),
-
       child: Row(
         children: [
           if (title != null)
@@ -232,9 +222,7 @@ class _Title extends StatelessWidget {
               title!,
               style: titleStyle,
             ),
-
           const Spacer(),
-
           if (subTitle != null)
             FilledButton.tonal(
               style: const ButtonStyle(
