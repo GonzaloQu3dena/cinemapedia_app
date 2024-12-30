@@ -1,7 +1,7 @@
-import 'package:cinemapedia_app/features/cinema/presentation/widgets/movies_horizontal_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:cinemapedia_app/features/cinema/presentation/widgets/movies_horizontal_list_view.dart';
 import 'package:cinemapedia_app/features/cinema/application/providers/movies_provider.dart';
 import 'package:cinemapedia_app/features/cinema/presentation/widgets/movies_slide_show.dart';
 import 'package:cinemapedia_app/features/cinema/presentation/controllers/cinema_controller.dart';
@@ -59,14 +59,11 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
 
   @override
   Widget build(BuildContext context) {
-    final slideShowMovies = ref.watch(slideShowMoviesProvider);
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
-    final upcomingMovies = ref.watch(upcomingMoviesProvider);
-    final popularMovies = ref.watch(popularMoviesProvider);
+    final cinemaState = ref.watch(cinemaControllerProvider);
 
-    print('Building CinemaView with ${slideShowMovies.length} movies');
+    print('Building CinemaView with ${cinemaState.slideShowMovies.length} movies');
 
-    if (slideShowMovies.isEmpty) {
+    if (cinemaState.slideShowMovies.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -75,39 +72,39 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
       slivers: [
         //* Slide Show
         SliverToBoxAdapter(
-          child: MoviesSlideShow(movies: slideShowMovies),
+          child: MoviesSlideShow(movies: cinemaState.slideShowMovies),
         ),
 
         //* In theaters
         SliverToBoxAdapter(
           child: MovieHorizontalListView(
-            movies: nowPlayingMovies,
+            movies: cinemaState.nowPlayingMovies,
             title: 'In theaters',
             subTitle: 'Monday 20th',
             loadNextPage: () =>
-                ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+                ref.read(cinemaControllerProvider.notifier).loadNextPageNowPlayingMovies(),
           ),
         ),
 
-        //* Commig soon
+        //* Coming soon
         SliverToBoxAdapter(
           child: MovieHorizontalListView(
-            movies: upcomingMovies,
+            movies: cinemaState.upcomingMovies,
             title: 'Coming soon',
             subTitle: 'In this month',
             loadNextPage: () =>
-                ref.read(upcomingMoviesProvider.notifier).getUpcomingMovies(),
+                ref.read(cinemaControllerProvider.notifier).loadNextPageUpcomingMovies(),
           ),
         ),
 
-        //* Commig soon
+        //* Popular
         SliverToBoxAdapter(
           child: MovieHorizontalListView(
-            movies: popularMovies,
+            movies: cinemaState.popularMovies,
             title: 'Popular',
             subTitle: 'In this month',
             loadNextPage: () =>
-                ref.read(popularMoviesProvider.notifier).getPopularMovies(),
+                ref.read(cinemaControllerProvider.notifier).loadNextPagePopularMovies(),
           ),
         )
       ],

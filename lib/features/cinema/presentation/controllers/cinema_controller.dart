@@ -8,62 +8,120 @@ import 'package:cinemapedia_app/features/cinema/application/providers/movies_pro
 /// #### Author:
 /// Gonzalo Quedena
 final cinemaControllerProvider =
-    StateNotifierProvider<CinemaController, List<Movie>>(
+    StateNotifierProvider<CinemaController, CinemaState>(
   (ref) {
     return CinemaController(ref);
   },
 );
 
+/// ### Cinema State
+/// It is the state of the cinema page. This state contains the list of movies that are currently playing in theaters.
+/// 
+/// #### Properties:
+/// - [nowPlayingMovies]: The list of movies that are currently playing in theaters.
+/// - [slideShowMovies]: The list of movies that are currently playing in theaters.
+/// - [upcomingMovies]: The list of movies that are currently playing in theaters.
+/// - [popularMovies]: The list of movies that are currently playing in theaters.
+/// 
+/// #### Methods:
+/// - [copyWith]: It returns a new instance of the state with the new values.
+/// 
+/// #### Author:
+/// Gonzalo Quedena
+class CinemaState {
+  final List<Movie> nowPlayingMovies;
+  final List<Movie> slideShowMovies;
+  final List<Movie> upcomingMovies;
+  final List<Movie> popularMovies;
+
+  CinemaState({
+    this.nowPlayingMovies = const [],
+    this.slideShowMovies = const [],
+    this.upcomingMovies = const [],
+    this.popularMovies = const [],
+  });
+
+  CinemaState copyWith({
+    List<Movie>? nowPlayingMovies,
+    List<Movie>? slideShowMovies,
+    List<Movie>? upcomingMovies,
+    List<Movie>? popularMovies,
+  }) {
+    return CinemaState(
+      nowPlayingMovies: nowPlayingMovies ?? this.nowPlayingMovies,
+      slideShowMovies: slideShowMovies ?? this.slideShowMovies,
+      upcomingMovies: upcomingMovies ?? this.upcomingMovies,
+      popularMovies: popularMovies ?? this.popularMovies,
+    );
+  }
+}
+
 /// ### Cinema Controller
 /// It is a controller that manages the state of the cinema page.
 /// 
 /// #### Properties:
-/// - [_ref]: The reference to the provider.
+/// - [_ref]: The reference to the provider container.
 /// 
 /// #### Methods:
-/// - [loadMovies]: Loads the movies from the API.
+/// - [loadMovies]: It loads the movies that are currently playing in theaters.
+/// - [loadSlideMovies]: It loads the movies that are currently playing in theaters.
+/// - [loadUpcomingMovies]: It loads the movies that are currently playing in theaters.
+/// - [loadPopularMovies]: It loads the movies that are currently playing in theaters.
+/// - [loadNextPageNowPlayingMovies]: It loads the next page of movies that are currently playing in theaters.
+/// - [loadNextPageUpcomingMovies]: It loads the next page of movies that are currently playing in theaters.
+/// - [loadNextPagePopularMovies]: It loads the next page of movies that are currently playing in theaters.
 /// 
 /// #### Author:
 /// Gonzalo Quedena
-class CinemaController extends StateNotifier<List<Movie>> {
+class CinemaController extends StateNotifier<CinemaState> {
   final Ref _ref;
 
-  CinemaController(this._ref) : super([]) {
+  CinemaController(this._ref) : super(CinemaState()) {
     loadMovies();
     loadSlideMovies();
     loadUpcomingMovies();
     loadPopularMovies();
   }
 
-  /// Loads the movies from the API.
   Future<void> loadMovies() async {
-    print('Loading movies...');
-    await _ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
-    state = _ref.read(nowPlayingMoviesProvider);
-    print('Movies loaded: ${state.length}');
+    await _ref.read(nowPlayingMoviesProvider.notifier).loadMovies();
+    final nowPlayingMovies = _ref.read(nowPlayingMoviesProvider);
+    state = state.copyWith(nowPlayingMovies: nowPlayingMovies);
   }
 
-  /// Loads the slide movies from the API.
   Future<void> loadSlideMovies() async {
-    print('Loading slide movies...');
     await _ref.read(slideShowMoviesProvider.notifier).loadMovies();
-    state = _ref.read(slideShowMoviesProvider);
-    print('Slide movies loaded: ${state.length}');
+    final slideShowMovies = _ref.read(slideShowMoviesProvider);
+    state = state.copyWith(slideShowMovies: slideShowMovies);
   }
 
-  /// Loads the upcoming movies from the API.
   Future<void> loadUpcomingMovies() async {
-    print('Loading upcoming movies...');
+    await _ref.read(upcomingMoviesProvider.notifier).loadMovies();
+    final upcomingMovies = _ref.read(upcomingMoviesProvider);
+    state = state.copyWith(upcomingMovies: upcomingMovies);
+  }
+
+  Future<void> loadPopularMovies() async {
+    await _ref.read(popularMoviesProvider.notifier).loadMovies();
+    final popularMovies = _ref.read(popularMoviesProvider);
+    state = state.copyWith(popularMovies: popularMovies);
+  }
+
+  Future<void> loadNextPageNowPlayingMovies() async {
+    await _ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    final nowPlayingMovies = _ref.read(nowPlayingMoviesProvider);
+    state = state.copyWith(nowPlayingMovies: nowPlayingMovies);
+  }
+
+  Future<void> loadNextPageUpcomingMovies() async {
     await _ref.read(upcomingMoviesProvider.notifier).loadNextPage();
     final upcomingMovies = _ref.read(upcomingMoviesProvider);
-    print('Upcoming movies loaded: ${upcomingMovies.length}');
+    state = state.copyWith(upcomingMovies: upcomingMovies);
   }
 
-  /// Loads the popular movies from the API.
-  Future<void> loadPopularMovies() async {
-    print('Loading popular movies...');
+  Future<void> loadNextPagePopularMovies() async {
     await _ref.read(popularMoviesProvider.notifier).loadNextPage();
     final popularMovies = _ref.read(popularMoviesProvider);
-    print('Popular movies loaded: ${popularMovies.length}');
+    state = state.copyWith(popularMovies: popularMovies);
   }
 }
