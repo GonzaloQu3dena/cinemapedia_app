@@ -2,8 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'movie_repository_provider.dart';
 import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
-import 'package:cinemapedia_app/features/cinema/application/usecases/get_now_playing_movies.dart';
-import 'package:cinemapedia_app/features/cinema/application/usecases/get_slide_show_movies.dart';
+import 'package:cinemapedia_app/features/cinema/application/usecases/use_cases.dart';
 
 /// ### Now Playing Movies Provider
 /// It is a StateNotifierProvider that provides a list of movies that are currently playing in the cinema. It uses the MoviesNotifier class to manage the state of the movies.
@@ -35,25 +34,76 @@ final slideShowMoviesProvider =
   },
 );
 
-/// ### MoviesNotifier
-/// It is a StateNotifier class that manages the state of the now playing movies. It has a method to load the next page of movies.
-///
-/// #### Properties:
-/// - [currentPage]: The current page of movies.
-/// - [getNowPlayingMovies]: The use case to load the now playing movies.
-///
-/// #### Methods:
-/// - [loadNextPage]: It loads the next page of movies.
+/// ### Upcoming Movies Provider
+/// It is a StateNotifierProvider that provides a list of upcoming movies. It uses the UpcomingMoviesNotifier class to manage the state of the movies.
 ///
 /// #### Author:
 /// Gonzalo Quedena
-class MoviesNotifier extends StateNotifier<List<Movie>> {
+final upcomingMoviesProvider =
+    StateNotifierProvider<UpcomingMoviesNotifier, List<Movie>>(
+  (ref) {
+    final repository = ref.read(movieRepositoryProvider);
+    final getUpcomingMovies = GetUpcomingMovies(repository);
+
+    return UpcomingMoviesNotifier(getUpcomingMovies: getUpcomingMovies);
+  },
+);
+
+/// ### BaseMoviesNotifier
+/// It is an abstract class that manages the common state and logic for loading movies.
+///
+/// #### Properties:
+/// - [currentPage]: The current page of movies.
+/// - [isLoading]: A flag to indicate if movies are being loaded.
+///
+/// #### Methods:
+/// - [loadMovies]: An abstract method to load movies.
+/// - [loadNextPage]: An abstract method to load the next page of movies.
+///
+/// #### Author:
+/// Gonzalo Quedena
+abstract class BaseMoviesNotifier extends StateNotifier<List<Movie>> {
+  BaseMoviesNotifier() : super([]);
+
   int currentPage = 0;
   bool isLoading = false;
+
+  Future<void> loadMovies();
+  Future<void> loadNextPage();
+}
+
+/// ### MoviesNotifier
+/// It is a StateNotifier class that manages the state of the now playing movies. It extends BaseMoviesNotifier to reuse the common logic.
+///
+/// #### Properties:
+/// - [getNowPlayingMovies]: The use case to load the now playing movies.
+///
+/// #### Methods:
+/// - [loadMovies]: It loads the now playing movies.
+/// - [loadNextPage]: It loads the next page of now playing movies.
+///
+/// #### Author:
+/// Gonzalo Quedena
+class MoviesNotifier extends BaseMoviesNotifier {
   final GetNowPlayingMovies getNowPlayingMovies;
 
-  MoviesNotifier({required this.getNowPlayingMovies}) : super([]);
+  MoviesNotifier({required this.getNowPlayingMovies}) : super();
 
+  @override
+  Future<void> loadMovies() async {
+    if (isLoading) return;
+
+    isLoading = true;
+
+    currentPage = 1;
+    final movies = await getNowPlayingMovies.call(pageNumber: currentPage);
+    state = movies;
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    isLoading = false;
+  }
+
+  @override
   Future<void> loadNextPage() async {
     if (isLoading) return;
 
@@ -69,23 +119,75 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
 }
 
 /// ### SlideShowMoviesNotifier
-/// It is a StateNotifier class that manages the state of the slide show movies. It has a method to load the movies for the slide show.
+/// It is a StateNotifier class that manages the state of the slide show movies.
 ///
 /// #### Properties:
 /// - [getSlideShowMovies]: The use case to load the slide show movies.
 ///
 /// #### Methods:
-/// - [loadSlideShowMovies]: It loads the movies for the slide show.
+/// - [loadMovies]: It loads the movies for the slide show.
 ///
 /// #### Author:
 /// Gonzalo Quedena
-class SlideShowMoviesNotifier extends StateNotifier<List<Movie>> {
+class SlideShowMoviesNotifier extends BaseMoviesNotifier {
   final GetSlideShowMovies getSlideShowMovies;
 
-  SlideShowMoviesNotifier({required this.getSlideShowMovies}) : super([]);
+  SlideShowMoviesNotifier({required this.getSlideShowMovies}) : super();
 
-  Future<void> loadSlideShowMovies() async {
+  @override
+  Future<void> loadMovies() async {
     final movies = await getSlideShowMovies.call(end: 6);
     state = movies;
+  }
+
+  @override
+  Future<void> loadNextPage() async {
+    // No-op: SlideShowMoviesNotifier does not support pagination
+  }
+}
+
+/// ### UpcomingMoviesNotifier
+/// It is a StateNotifier class that manages the state of the upcoming movies. It extends BaseMoviesNotifier to reuse the common logic.
+///
+/// #### Properties:
+/// - [getUpcomingMovies]: The use case to load the upcoming movies.
+///
+/// #### Methods:
+/// - [loadMovies]: It loads the upcoming movies.
+/// - [loadNextPage]: It loads the next page of upcoming movies.
+///
+/// #### Author:
+/// Gonzalo Quedena
+class UpcomingMoviesNotifier extends BaseMoviesNotifier {
+  final GetUpcomingMovies getUpcomingMovies;
+
+  UpcomingMoviesNotifier({required this.getUpcomingMovies}) : super();
+
+  @override
+  Future<void> loadMovies() async {
+    if (isLoading) return;
+
+    isLoading = true;
+
+    currentPage = 1;
+    final movies = await getUpcomingMovies.call(pageNumber: currentPage);
+    state = movies;
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    isLoading = false;
+  }
+
+  @override
+  Future<void> loadNextPage() async {
+    if (isLoading) return;
+
+    isLoading = true;
+
+    currentPage++;
+    final movies = await getUpcomingMovies.call(pageNumber: currentPage);
+    state = [...state, ...movies];
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    isLoading = false;
   }
 }

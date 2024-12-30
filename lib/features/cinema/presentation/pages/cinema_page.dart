@@ -53,12 +53,14 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
     /// Load the movies when the view is initialized.
     ref.read(cinemaControllerProvider.notifier).loadMovies();
     ref.read(cinemaControllerProvider.notifier).loadSlideMovies();
+    ref.read(cinemaControllerProvider.notifier).loadUpcomingMovies();
   }
 
   @override
   Widget build(BuildContext context) {
     final slideShowMovies = ref.watch(slideShowMoviesProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
 
     print('Building CinemaView with ${slideShowMovies.length} movies');
 
@@ -82,6 +84,17 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
             subTitle: 'Monday 20th',
             loadNextPage: () =>
                 ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+          ),
+        ),
+
+        //* Commig soon
+        SliverToBoxAdapter(
+          child: MovieHorizontalListView(
+            movies: upcomingMovies,
+            title: 'Coming soon',
+            subTitle: 'In this month',
+            loadNextPage: () =>
+                ref.read(upcomingMoviesProvider.notifier).getUpcomingMovies(),
           ),
         )
       ],

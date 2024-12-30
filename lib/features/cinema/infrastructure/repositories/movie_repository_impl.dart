@@ -24,4 +24,10 @@ class MovieRepositoryImpl extends MoviesRepository {
   Future<List<Movie>> getNowPlaying(int pageNumber) {
     return datasource.getNowPlaying(pageNumber: pageNumber);
   }
+  
+  @override
+  /// Refer to [MoviesRepository.getUpcoming]
+  Future<List<Movie>> getUpcoming(int pageNumber) {
+    return datasource.getUpcoming(pageNumber: pageNumber);
+  }
 }

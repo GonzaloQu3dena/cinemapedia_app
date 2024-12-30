@@ -21,4 +21,17 @@ abstract class MoviesRepository {
   /// #### Author:
   /// Gonzalo Quedena
   Future<List<Movie>> getNowPlaying(int pageNumber);
+
+  /// ### Get the list of upcoming movies by page.
+  /// This method will be implemented by the data layer to get the list of upcoming movies by page.
+  /// 
+  /// #### Parameters:
+  /// - [pageNumber]: The page number to get the list of movies.
+  /// 
+  /// #### Returns:
+  /// - A list of movies.
+  /// 
+  /// #### Author:
+  /// Gonzalo Quedena
+  Future<List<Movie>> getUpcoming(int pageNumber);
 }

@@ -30,6 +30,8 @@ class CinemaController extends StateNotifier<List<Movie>> {
 
   CinemaController(this._ref) : super([]) {
     loadMovies();
+    loadSlideMovies();
+    loadUpcomingMovies();
   }
 
   /// Loads the movies from the API.
@@ -43,8 +45,16 @@ class CinemaController extends StateNotifier<List<Movie>> {
   /// Loads the slide movies from the API.
   Future<void> loadSlideMovies() async {
     print('Loading slide movies...');
-    await _ref.read(slideShowMoviesProvider.notifier).loadSlideShowMovies();
+    await _ref.read(slideShowMoviesProvider.notifier).loadMovies();
     state = _ref.read(slideShowMoviesProvider);
     print('Slide movies loaded: ${state.length}');
+  }
+
+  /// Loads the upcoming movies from the API.
+  Future<void> loadUpcomingMovies() async {
+    print('Loading upcoming movies...');
+    await _ref.read(upcomingMoviesProvider.notifier).loadNextPage();
+    final upcomingMovies = _ref.read(upcomingMoviesProvider);
+    print('Upcoming movies loaded: ${upcomingMovies.length}');
   }
 }

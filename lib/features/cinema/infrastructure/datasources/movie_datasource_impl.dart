@@ -37,7 +37,24 @@ class MovieDatasourceImpl extends MoviesDatasource {
       },
     );
 
-    final movieResponse = MovieResponse.fromJson(response.data);
+    return _jsonToMovies(response.data);
+  }
+  
+  @override
+  /// Refer to [MoviesDatasource.getPopular] for more information.
+  Future<List<Movie>> getUpcoming({int pageNumber = 1}) async {
+    final response = await dio.get(
+      '/movie/upcoming',
+      queryParameters: {
+        'page': pageNumber,
+      },
+    );
+
+    return _jsonToMovies(response.data);
+  }
+
+  List<Movie> _jsonToMovies(Map<String, dynamic> response) {
+    final movieResponse = MovieResponse.fromJson(response);
 
     final List<Movie> movies = movieResponse.results
         .where(
