@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:cinemapedia_app/features/cinema/presentation/widgets/movies_horizontal_list_view.dart';
-import 'package:cinemapedia_app/features/cinema/application/providers/movies_provider.dart';
 import 'package:cinemapedia_app/features/cinema/presentation/widgets/movies_slide_show.dart';
 import 'package:cinemapedia_app/features/cinema/presentation/controllers/cinema_controller.dart';
 
