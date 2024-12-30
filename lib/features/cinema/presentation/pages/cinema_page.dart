@@ -1,3 +1,4 @@
+import 'package:cinemapedia_app/public/home/widgets/full_screen_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -48,22 +49,33 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
   @override
   void initState() {
     super.initState();
+    _loadAllMovies();
+  }
 
-    /// Load the movies when the view is initialized.
-    ref.read(cinemaControllerProvider.notifier).loadMovies();
-    ref.read(cinemaControllerProvider.notifier).loadSlideMovies();
-    ref.read(cinemaControllerProvider.notifier).loadUpcomingMovies();
-    ref.read(cinemaControllerProvider.notifier).loadPopularMovies();
+  void _loadAllMovies() {
+    final notifier = ref.read(cinemaControllerProvider.notifier);
+    notifier.loadMovies();
+    notifier.loadSlideMovies();
+    notifier.loadUpcomingMovies();
+    notifier.loadPopularMovies();
+  }
+
+  bool _areMoviesLoaded(CinemaState cinemaState) {
+    return cinemaState.slideShowMovies.isNotEmpty &&
+        cinemaState.nowPlayingMovies.isNotEmpty &&
+        cinemaState.upcomingMovies.isNotEmpty &&
+        cinemaState.popularMovies.isNotEmpty;
   }
 
   @override
   Widget build(BuildContext context) {
     final cinemaState = ref.watch(cinemaControllerProvider);
 
-    print('Building CinemaView with ${cinemaState.slideShowMovies.length} movies');
+    print(
+        'Building CinemaView with ${cinemaState.slideShowMovies.length} movies');
 
-    if (cinemaState.slideShowMovies.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+    if (!_areMoviesLoaded(cinemaState)) {
+      return const FullScreenLoader();
     }
 
     /// Custom Scroll View with Slivers to show the Slide Show and the Horizontal List View of Movies.
@@ -80,8 +92,9 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
             movies: cinemaState.nowPlayingMovies,
             title: 'In theaters',
             subTitle: 'Monday 20th',
-            loadNextPage: () =>
-                ref.read(cinemaControllerProvider.notifier).loadNextPageNowPlayingMovies(),
+            loadNextPage: () => ref
+                .read(cinemaControllerProvider.notifier)
+                .loadNextPageNowPlayingMovies(),
           ),
         ),
 
@@ -91,8 +104,9 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
             movies: cinemaState.upcomingMovies,
             title: 'Coming soon',
             subTitle: 'In this month',
-            loadNextPage: () =>
-                ref.read(cinemaControllerProvider.notifier).loadNextPageUpcomingMovies(),
+            loadNextPage: () => ref
+                .read(cinemaControllerProvider.notifier)
+                .loadNextPageUpcomingMovies(),
           ),
         ),
 
@@ -102,8 +116,9 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
             movies: cinemaState.popularMovies,
             title: 'Popular',
             subTitle: 'In this month',
-            loadNextPage: () =>
-                ref.read(cinemaControllerProvider.notifier).loadNextPagePopularMovies(),
+            loadNextPage: () => ref
+                .read(cinemaControllerProvider.notifier)
+                .loadNextPagePopularMovies(),
           ),
         )
       ],
