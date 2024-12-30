@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'movie_repository_provider.dart';
 import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
 import 'package:cinemapedia_app/features/cinema/application/usecases/use_cases.dart';
+import 'package:cinemapedia_app/features/cinema/application/usecases/get_movie_by_id.dart';
 
 /// ### Now Playing Movies Provider
 /// It is a StateNotifierProvider that provides a list of movies that are currently playing in the cinema. It uses the MoviesNotifier class to manage the state of the movies.
@@ -56,6 +57,21 @@ final popularMoviesProvider =
     final getPopularMovies = GetPopularMovies(repository);
 
     return PopularMoviesNotifier(getPopularMovies: getPopularMovies);
+  },
+);
+
+/// ### Movie By Id Provider
+/// It is a StateNotifierProvider that provides a movie by its ID. It uses the MovieByIdNotifier class to manage the state of the movie.
+///
+/// #### Author:
+/// Gonzalo Quedena
+final movieByIdProvider =
+    StateNotifierProvider.family<MovieByIdNotifier, Movie?, int>(
+  (ref, movieId) {
+    final repository = ref.read(movieRepositoryProvider);
+    final getMovieById = GetMovieById(repository);
+
+    return MovieByIdNotifier(getMovieById: getMovieById, movieId: movieId);
   },
 );
 
@@ -233,5 +249,31 @@ class PopularMoviesNotifier extends BaseMoviesNotifier {
 
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
+  }
+}
+
+/// ### MovieByIdNotifier
+/// It is a StateNotifier class that manages the state of a single movie by its ID.
+///
+/// #### Properties:
+/// - [getMovieById]: The use case to load the movie by its ID.
+/// - [movieId]: The ID of the movie to load.
+///
+/// #### Methods:
+/// - [loadMovie]: It loads the movie by its ID.
+///
+/// #### Author:
+/// Gonzalo Quedena
+class MovieByIdNotifier extends StateNotifier<Movie?> {
+  final GetMovieById getMovieById;
+  final int movieId;
+
+  MovieByIdNotifier({required this.getMovieById, required this.movieId}) : super(null) {
+    loadMovie();
+  }
+
+  Future<void> loadMovie() async {
+    final movie = await getMovieById.call(movieId);
+    state = movie;
   }
 }

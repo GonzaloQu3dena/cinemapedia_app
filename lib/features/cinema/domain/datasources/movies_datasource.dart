@@ -48,4 +48,17 @@ abstract class MoviesDatasource {
   /// #### Author:
   /// Gonzalo Quedena
   Future<List<Movie>> getPopular({int pageNumber = 1});
+
+  /// ### Get the movie by id.
+  /// This method will be implemented by the data source layer to get the movie by id.
+  /// 
+  /// #### Parameters:
+  /// - [id]: The id of the movie.
+  /// 
+  /// #### Returns:
+  /// - A movie.
+  /// 
+  /// #### Author:
+  /// Gonzalo Quedena
+  Future<Movie> getMovieById(int id);
 }

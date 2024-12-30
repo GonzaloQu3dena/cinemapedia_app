@@ -33,12 +33,14 @@ class CinemaState {
   final List<Movie> slideShowMovies;
   final List<Movie> upcomingMovies;
   final List<Movie> popularMovies;
+  final Movie? selectedMovie;
 
   CinemaState({
     this.nowPlayingMovies = const [],
     this.slideShowMovies = const [],
     this.upcomingMovies = const [],
     this.popularMovies = const [],
+    this.selectedMovie,
   });
 
   CinemaState copyWith({
@@ -46,12 +48,14 @@ class CinemaState {
     List<Movie>? slideShowMovies,
     List<Movie>? upcomingMovies,
     List<Movie>? popularMovies,
+    Movie? selectedMovie,
   }) {
     return CinemaState(
       nowPlayingMovies: nowPlayingMovies ?? this.nowPlayingMovies,
       slideShowMovies: slideShowMovies ?? this.slideShowMovies,
       upcomingMovies: upcomingMovies ?? this.upcomingMovies,
       popularMovies: popularMovies ?? this.popularMovies,
+      selectedMovie: selectedMovie ?? this.selectedMovie,
     );
   }
 }
@@ -70,6 +74,7 @@ class CinemaState {
 /// - [loadNextPageNowPlayingMovies]: It loads the next page of movies that are currently playing in theaters.
 /// - [loadNextPageUpcomingMovies]: It loads the next page of movies that are currently playing in theaters.
 /// - [loadNextPagePopularMovies]: It loads the next page of movies that are currently playing in theaters.
+/// - [loadMovieById]: It loads a movie by its ID and updates the state with the selected movie.
 /// 
 /// #### Author:
 /// Gonzalo Quedena
@@ -123,5 +128,12 @@ class CinemaController extends StateNotifier<CinemaState> {
     await _ref.read(popularMoviesProvider.notifier).loadNextPage();
     final popularMovies = _ref.read(popularMoviesProvider);
     state = state.copyWith(popularMovies: popularMovies);
+  }
+
+  Future<void> loadMovieById(int movieId) async {
+    final movieNotifier = _ref.read(movieByIdProvider(movieId).notifier);
+    await movieNotifier.loadMovie();
+    final movie = _ref.read(movieByIdProvider(movieId));
+    state = state.copyWith(selectedMovie: movie);
   }
 }
