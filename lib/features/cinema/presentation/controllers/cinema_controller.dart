@@ -32,6 +32,7 @@ class CinemaController extends StateNotifier<List<Movie>> {
     loadMovies();
     loadSlideMovies();
     loadUpcomingMovies();
+    loadPopularMovies();
   }
 
   /// Loads the movies from the API.
@@ -56,5 +57,13 @@ class CinemaController extends StateNotifier<List<Movie>> {
     await _ref.read(upcomingMoviesProvider.notifier).loadNextPage();
     final upcomingMovies = _ref.read(upcomingMoviesProvider);
     print('Upcoming movies loaded: ${upcomingMovies.length}');
+  }
+
+  /// Loads the popular movies from the API.
+  Future<void> loadPopularMovies() async {
+    print('Loading popular movies...');
+    await _ref.read(popularMoviesProvider.notifier).loadNextPage();
+    final popularMovies = _ref.read(popularMoviesProvider);
+    print('Popular movies loaded: ${popularMovies.length}');
   }
 }

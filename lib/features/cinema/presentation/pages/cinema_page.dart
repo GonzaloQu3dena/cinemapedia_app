@@ -54,6 +54,7 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
     ref.read(cinemaControllerProvider.notifier).loadMovies();
     ref.read(cinemaControllerProvider.notifier).loadSlideMovies();
     ref.read(cinemaControllerProvider.notifier).loadUpcomingMovies();
+    ref.read(cinemaControllerProvider.notifier).loadPopularMovies();
   }
 
   @override
@@ -61,6 +62,7 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
     final slideShowMovies = ref.watch(slideShowMoviesProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final upcomingMovies = ref.watch(upcomingMoviesProvider);
+    final popularMovies = ref.watch(popularMoviesProvider);
 
     print('Building CinemaView with ${slideShowMovies.length} movies');
 
@@ -95,6 +97,17 @@ class _CinemaViewState extends ConsumerState<_CinemaView> {
             subTitle: 'In this month',
             loadNextPage: () =>
                 ref.read(upcomingMoviesProvider.notifier).getUpcomingMovies(),
+          ),
+        ),
+
+        //* Commig soon
+        SliverToBoxAdapter(
+          child: MovieHorizontalListView(
+            movies: popularMovies,
+            title: 'Popular',
+            subTitle: 'In this month',
+            loadNextPage: () =>
+                ref.read(popularMoviesProvider.notifier).getPopularMovies(),
           ),
         )
       ],

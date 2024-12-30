@@ -39,7 +39,7 @@ class MovieDatasourceImpl extends MoviesDatasource {
 
     return _jsonToMovies(response.data);
   }
-  
+
   @override
   /// Refer to [MoviesDatasource.getPopular] for more information.
   Future<List<Movie>> getUpcoming({int pageNumber = 1}) async {
@@ -52,7 +52,28 @@ class MovieDatasourceImpl extends MoviesDatasource {
 
     return _jsonToMovies(response.data);
   }
+  
+  @override
+  /// Refer to [MoviesDatasource.getPopular] for more information.
+  Future<List<Movie>> getPopular({int pageNumber = 1}) async {
+    final response = await dio.get(
+      '/movie/popular',
+      queryParameters: {
+        'page': pageNumber,
+      },
+    );
 
+    return _jsonToMovies(response.data);
+  }
+
+  /// ### JSON to Movies
+  /// This method is responsible for converting the JSON response from the API to a list of [Movie] entities.
+  /// 
+  /// #### Parameters:
+  /// - [response]: JSON response from the API.
+  /// 
+  /// #### Returns:
+  /// - A list of [Movie] entities.
   List<Movie> _jsonToMovies(Map<String, dynamic> response) {
     final movieResponse = MovieResponse.fromJson(response);
 
@@ -67,4 +88,5 @@ class MovieDatasourceImpl extends MoviesDatasource {
 
     return movies;
   }
+
 }

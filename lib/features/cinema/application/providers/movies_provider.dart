@@ -49,6 +49,16 @@ final upcomingMoviesProvider =
   },
 );
 
+final popularMoviesProvider =
+    StateNotifierProvider<PopularMoviesNotifier, List<Movie>>(
+  (ref) {
+    final repository = ref.read(movieRepositoryProvider);
+    final getPopularMovies = GetPopularMovies(repository);
+
+    return PopularMoviesNotifier(getPopularMovies: getPopularMovies);
+  },
+);
+
 /// ### BaseMoviesNotifier
 /// It is an abstract class that manages the common state and logic for loading movies.
 ///
@@ -185,6 +195,40 @@ class UpcomingMoviesNotifier extends BaseMoviesNotifier {
 
     currentPage++;
     final movies = await getUpcomingMovies.call(pageNumber: currentPage);
+    state = [...state, ...movies];
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    isLoading = false;
+  }
+}
+
+class PopularMoviesNotifier extends BaseMoviesNotifier {
+  final GetPopularMovies getPopularMovies;
+
+  PopularMoviesNotifier({required this.getPopularMovies}) : super();
+
+  @override
+  Future<void> loadMovies() async {
+    if (isLoading) return;
+
+    isLoading = true;
+
+    currentPage = 1;
+    final movies = await getPopularMovies.call(pageNumber: currentPage);
+    state = movies;
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    isLoading = false;
+  }
+
+  @override
+  Future<void> loadNextPage() async {
+    if (isLoading) return;
+
+    isLoading = true;
+
+    currentPage++;
+    final movies = await getPopularMovies.call(pageNumber: currentPage);
     state = [...state, ...movies];
 
     await Future.delayed(const Duration(milliseconds: 300));
