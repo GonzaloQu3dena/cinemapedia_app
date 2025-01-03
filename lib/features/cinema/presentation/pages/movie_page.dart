@@ -1,8 +1,8 @@
-import 'package:animate_do/animate_do.dart';
-import 'package:cinemapedia_app/features/cinema/application/providers/actors_provider.dart';
-import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
+import 'package:cinemapedia_app/features/cinema/application/providers/actors_provider.dart';
 import 'package:cinemapedia_app/features/cinema/presentation/controllers/cinema_controller.dart';
 
 class MoviePage extends ConsumerStatefulWidget {
@@ -125,11 +125,9 @@ class _MovieDetail extends StatelessWidget {
             ],
           ),
         ),
-
         _ActorsByMovie(
           movieId: movie.id.toString(),
         ),
-        
         SizedBox(
           height: 50,
         ),
@@ -166,6 +164,10 @@ class _CustomSliverAppBar extends StatelessWidget {
               child: Image.network(
                 movie.posterPath,
                 fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress != null) return const SizedBox();
+                  return FadeIn(child: child);
+                },
               ),
             ),
             const SizedBox.expand(
@@ -250,13 +252,18 @@ class _ActorsByMovie extends ConsumerWidget {
                   height: 5,
                 ),
 
-                Text(actor.name, maxLines: 2),
+                Text(
+                  actor.name,
+                  maxLines: 2,
+                ),
+
                 Text(
                   actor.character ?? '',
                   maxLines: 2,
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis),
+                    fontWeight: FontWeight.bold,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
