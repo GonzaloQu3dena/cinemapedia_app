@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
+import 'package:cinemapedia_app/features/cinema/domain/entities/actor.dart';
 import 'package:cinemapedia_app/features/cinema/application/providers/movies_provider.dart';
+import 'package:cinemapedia_app/features/cinema/application/providers/actors_provider.dart';
 
 /// ### Cinema Controller
 /// It is a controller that manages the state of the cinema page.
@@ -22,6 +24,8 @@ final cinemaControllerProvider =
 /// - [slideShowMovies]: The list of movies that are currently playing in theaters.
 /// - [upcomingMovies]: The list of movies that are currently playing in theaters.
 /// - [popularMovies]: The list of movies that are currently playing in theaters.
+/// - [selectedMovie]: The movie that is currently selected.
+/// - [actorsByMovie]: The list of actors for the selected movie.
 /// 
 /// #### Methods:
 /// - [copyWith]: It returns a new instance of the state with the new values.
@@ -34,6 +38,7 @@ class CinemaState {
   final List<Movie> upcomingMovies;
   final List<Movie> popularMovies;
   final Movie? selectedMovie;
+  final List<Actor> actorsByMovie;
 
   CinemaState({
     this.nowPlayingMovies = const [],
@@ -41,6 +46,7 @@ class CinemaState {
     this.upcomingMovies = const [],
     this.popularMovies = const [],
     this.selectedMovie,
+    this.actorsByMovie = const [],
   });
 
   CinemaState copyWith({
@@ -49,6 +55,7 @@ class CinemaState {
     List<Movie>? upcomingMovies,
     List<Movie>? popularMovies,
     Movie? selectedMovie,
+    List<Actor>? actorsByMovie,
   }) {
     return CinemaState(
       nowPlayingMovies: nowPlayingMovies ?? this.nowPlayingMovies,
@@ -56,6 +63,7 @@ class CinemaState {
       upcomingMovies: upcomingMovies ?? this.upcomingMovies,
       popularMovies: popularMovies ?? this.popularMovies,
       selectedMovie: selectedMovie ?? this.selectedMovie,
+      actorsByMovie: actorsByMovie ?? this.actorsByMovie,
     );
   }
 }
@@ -75,6 +83,7 @@ class CinemaState {
 /// - [loadNextPageUpcomingMovies]: It loads the next page of movies that are currently playing in theaters.
 /// - [loadNextPagePopularMovies]: It loads the next page of movies that are currently playing in theaters.
 /// - [loadMovieById]: It loads a movie by its ID and updates the state with the selected movie.
+/// - [loadActorsByMovie]: It loads the actors for a movie by its ID and updates the state with the actors.
 /// 
 /// #### Author:
 /// Gonzalo Quedena
@@ -135,5 +144,13 @@ class CinemaController extends StateNotifier<CinemaState> {
     await movieNotifier.loadMovie();
     final movie = _ref.read(movieByIdProvider(movieId));
     state = state.copyWith(selectedMovie: movie);
+  }
+
+  Future<void> loadActorsByMovie(int movieId) async {
+    final actorNotifier = _ref.read(actorsByMovieProvider.notifier);
+    await actorNotifier.getActorsByMovie(movieId.toString());
+
+    final actors = _ref.read(actorsByMovieProvider)[movieId.toString()] ?? [];
+    state = state.copyWith(actorsByMovie: actors);
   }
 }

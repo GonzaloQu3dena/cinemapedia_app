@@ -3,8 +3,8 @@ import 'package:cinemapedia_app/features/cinema/domain/entities/actor.dart';
 import 'package:cinemapedia_app/features/cinema/application/usecases/get_actors_by_movie.dart';
 import 'package:cinemapedia_app/features/cinema/application/providers/actors_repository_provider.dart';
 
-final actorByMovieProvicer =
-    StateNotifierProvider<ActorByMovieNotifier, List<Actor>>(
+final actorsByMovieProvider =
+    StateNotifierProvider<ActorByMovieNotifier, Map<String, List<Actor>>>(
   (ref) {
     final repository = ref.read(actorsRepositoryProvider);
     final getActorByMovie = GetActorsByMovie(repository);
@@ -13,13 +13,16 @@ final actorByMovieProvicer =
   },
 );
 
-class ActorByMovieNotifier extends StateNotifier<List<Actor>> {
+class ActorByMovieNotifier extends StateNotifier<Map<String, List<Actor>>> {
   final GetActorsByMovie getActorByMovie;
 
-  ActorByMovieNotifier({required this.getActorByMovie}) : super([]);
+  ActorByMovieNotifier({required this.getActorByMovie}) : super({});
 
-  void getActorsByMovie(int movieId) async {
-    final actorByMovie = await getActorByMovie(movieId.toString());
-    state = actorByMovie;
+  Future<void> getActorsByMovie(String movieId) async {
+
+    if (state[movieId] != null) return;
+
+    final actorsByMovie = await getActorByMovie(movieId.toString());
+    state = {...state, movieId: actorsByMovie};
   }
 }
