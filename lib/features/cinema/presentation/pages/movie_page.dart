@@ -5,6 +5,14 @@ import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
 import 'package:cinemapedia_app/features/cinema/application/providers/actors_provider.dart';
 import 'package:cinemapedia_app/features/cinema/presentation/controllers/cinema_controller.dart';
 
+/// ### Movie Page
+/// This page displays detailed information about a specific movie.
+/// 
+/// #### Properties:
+/// - [movideId]: The ID of the movie to display.
+/// 
+/// #### Author:
+/// Gonzalo Quedena
 class MoviePage extends ConsumerStatefulWidget {
   static const name = "movie-page";
 
@@ -19,6 +27,11 @@ class MoviePage extends ConsumerStatefulWidget {
   MoviePageState createState() => MoviePageState();
 }
 
+/// ### Movie Page State
+/// This is the state of the Movie Page, it loads the movie and its actors when the view is initialized.
+/// 
+/// #### Author:
+/// Gonzalo Quedena
 class MoviePageState extends ConsumerState<MoviePage> {
   @override
   void initState() {
@@ -26,14 +39,11 @@ class MoviePageState extends ConsumerState<MoviePage> {
     _loadMovie();
   }
 
+  /// Loads the movie and its actors by ID.
   void _loadMovie() {
-    ref
-        .read(cinemaControllerProvider.notifier)
-        .loadMovieById(int.tryParse(widget.movideId)!);
-
-    ref
-        .read(cinemaControllerProvider.notifier)
-        .loadActorsByMovie(int.tryParse(widget.movideId)!);
+    final movieId = int.tryParse(widget.movideId) ?? 0;
+    ref.read(cinemaControllerProvider.notifier).loadMovieById(movieId);
+    ref.read(cinemaControllerProvider.notifier).loadActorsByMovie(movieId);
   }
 
   @override
@@ -61,6 +71,14 @@ class MoviePageState extends ConsumerState<MoviePage> {
   }
 }
 
+/// ### Movie Detail
+/// This widget displays detailed information about the movie.
+/// 
+/// #### Properties:
+/// - [movie]: The movie to display.
+/// 
+/// #### Author:
+/// Gonzalo Quedena
 class _MovieDetail extends StatelessWidget {
   final Movie movie;
 
@@ -128,7 +146,7 @@ class _MovieDetail extends StatelessWidget {
         _ActorsByMovie(
           movieId: movie.id.toString(),
         ),
-        SizedBox(
+        const SizedBox(
           height: 50,
         ),
       ],
@@ -136,6 +154,14 @@ class _MovieDetail extends StatelessWidget {
   }
 }
 
+/// ### Custom Sliver App Bar
+/// This widget displays a custom sliver app bar with the movie's poster and title.
+/// 
+/// #### Properties:
+/// - [movie]: The movie to display.
+/// 
+/// #### Author:
+/// Gonzalo Quedena
 class _CustomSliverAppBar extends StatelessWidget {
   final Movie movie;
 
@@ -155,7 +181,7 @@ class _CustomSliverAppBar extends StatelessWidget {
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         title: Text(
           movie.title.value,
-          style: TextStyle(fontSize: 20, color: Colors.white),
+          style: const TextStyle(fontSize: 20, color: Colors.white),
           textAlign: TextAlign.start,
         ),
         background: Stack(
@@ -206,6 +232,14 @@ class _CustomSliverAppBar extends StatelessWidget {
   }
 }
 
+/// ### Actors By Movie
+/// This widget displays a list of actors for the given movie.
+/// 
+/// #### Properties:
+/// - [movieId]: The ID of the movie to fetch actors for.
+/// 
+/// #### Author:
+/// Gonzalo Quedena
 class _ActorsByMovie extends ConsumerWidget {
   final String movieId;
 
@@ -247,7 +281,7 @@ class _ActorsByMovie extends ConsumerWidget {
                   ),
                 ),
 
-                // Nombre
+                // Actor Name
                 const SizedBox(
                   height: 5,
                 ),
