@@ -7,71 +7,45 @@ import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
 
 typedef SearchMovieCallback = Future<List<Movie>> Function(String query);
 
-/// ### Search Movie Delegate
-/// It is a delegate that will be used to search movies.
-///
-/// #### Properties:
-/// - [searchFieldLabel]: It is the label of the search field.
-///
-/// #### Methods:
-/// - [buildActions]: It builds the actions of the search bar.
-/// - [buildLeading]: It builds the leading of the search bar.
-/// - [buildResults]: It builds the results of the search bar.
-/// - [buildSuggestions]: It builds the suggestions of the search bar.
-/// - [_onQueryChanged]: It is called when the query changes.
-///
-/// #### Author:
-/// Gonzalo Quedena
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMovieCallback searchMovieCallback;
   List<Movie> initialMovies;
-
-  final StreamController<List<Movie>> debouncedMovies =
-      StreamController.broadcast();
-
+  final StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
   Timer? _debounceTimer;
+  bool _isClosed = false;
 
   SearchMovieDelegate({
     required this.searchMovieCallback,
     required this.initialMovies,
-  });
+  }) : super(searchFieldLabel: 'Search movie');
 
   void clearStreams() {
-    debouncedMovies.close();
+    if (!_isClosed) {
+      debouncedMovies.close();
+      _isClosed = true;
+    }
   }
 
-  /// This method is called when the query changes and it will search the movies.
   void _onQueryChanged(String query) {
-    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
-
-    _debounceTimer = Timer(
-      const Duration(milliseconds: 500),
-      () async {
-        //if (query.isEmpty) {
-        //  debouncedMovies.add([]);
-        //  return;
-        //}
-
-        final movies = await searchMovieCallback(query);
-        initialMovies = movies;
-        debouncedMovies.add(movies);
-      },
-    );
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      if (_isClosed) return;
+      final movies = await searchMovieCallback(query);
+      initialMovies = movies;
+      debouncedMovies.add(movies);
+    });
   }
-
-  @override
-  String get searchFieldLabel => 'Search movie';
 
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
-      FadeIn(
-        animate: query.isNotEmpty,
-        child: IconButton(
-          onPressed: () => query = '',
-          icon: const Icon(Icons.clear),
+      if (query.isNotEmpty)
+        FadeIn(
+          child: IconButton(
+            onPressed: () => query = '',
+            icon: const Icon(Icons.clear),
+          ),
         ),
-      ),
     ];
   }
 
@@ -88,21 +62,35 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return const Text('BuildResults');
+    return StreamBuilder<List<Movie>>(
+      initialData: initialMovies,
+      stream: debouncedMovies.stream,
+      builder: (context, snapshot) {
+        final movies = snapshot.data ?? [];
+        return ListView.builder(
+          itemCount: movies.length,
+          itemBuilder: (context, index) {
+            return _MovieItem(
+              movie: movies[index],
+              onMovieSelected: (context, movie) {
+                clearStreams();
+                close(context, movie);
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     _onQueryChanged(query);
-
     return StreamBuilder<List<Movie>>(
       initialData: initialMovies,
       stream: debouncedMovies.stream,
-      
       builder: (context, snapshot) {
-
         final movies = snapshot.data ?? [];
-
         return ListView.builder(
           itemCount: movies.length,
           itemBuilder: (context, index) {
@@ -120,15 +108,6 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   }
 }
 
-/// ### Movie Item
-/// It is a widget that will be used to show a movie item.
-///
-/// #### Properties:
-/// - [movie]: It is the movie to show.
-/// - [onMovieSelected]: It is the function to call when the movie is selected.
-///
-/// #### Author:
-/// Gonzalo Quedena
 class _MovieItem extends StatelessWidget {
   final Movie movie;
   final Function(BuildContext, Movie) onMovieSelected;
@@ -178,8 +157,7 @@ class _MovieItem extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(Icons.star_half_rounded,
-                          color: Colors.yellow.shade800),
+                      Icon(Icons.star_half_rounded, color: Colors.yellow.shade800),
                       const SizedBox(width: 5),
                       Text(
                         HumanFormats.number(movie.voteAverage.value, 1),
