@@ -1,6 +1,8 @@
-import 'package:animate_do/animate_do.dart';
-import 'package:cinemapedia_app/core/helpers/human_formats.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:animate_do/animate_do.dart';
+
+import 'package:cinemapedia_app/core/helpers/human_formats.dart';
 import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
 
 typedef SearchMovieCallback = Future<List<Movie>> Function(String query);
@@ -16,15 +18,41 @@ typedef SearchMovieCallback = Future<List<Movie>> Function(String query);
 /// - [buildLeading]: It builds the leading of the search bar.
 /// - [buildResults]: It builds the results of the search bar.
 /// - [buildSuggestions]: It builds the suggestions of the search bar.
+/// - [_onQueryChanged]: It is called when the query changes.
 ///
 /// #### Author:
 /// Gonzalo Quedena
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMovieCallback searchMovieCallback;
+  final StreamController<List<Movie>> debouncedMovies =
+      StreamController.broadcast();
+  Timer? _debounceTimer;
 
   SearchMovieDelegate({
     required this.searchMovieCallback,
   });
+
+  void clearStreams() {
+    debouncedMovies.close();
+  }
+
+  /// This method is called when the query changes and it will search the movies.
+  void _onQueryChanged(String query) {
+    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+
+    _debounceTimer = Timer(
+      const Duration(milliseconds: 500),
+      () async {
+        if (query.isEmpty) {
+          debouncedMovies.add([]);
+          return;
+        }
+
+        final movies = await searchMovieCallback(query);
+        debouncedMovies.add(movies);
+      },
+    );
+  }
 
   @override
   String get searchFieldLabel => 'Search movie';
@@ -32,12 +60,11 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
-      //if (query.isNotEmpty)
       FadeIn(
         animate: query.isNotEmpty,
         child: IconButton(
           onPressed: () => query = '',
-          icon: Icon(Icons.clear),
+          icon: const Icon(Icons.clear),
         ),
       ),
     ];
@@ -46,8 +73,11 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-      onPressed: () => close(context, null),
-      icon: Icon(Icons.arrow_back_ios_new_rounded),
+      onPressed: () {
+        clearStreams();
+        close(context, null);
+      },
+      icon: const Icon(Icons.arrow_back_ios_new_rounded),
     );
   }
 
@@ -58,19 +88,22 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return FutureBuilder(
-      future: searchMovieCallback(query),
+    _onQueryChanged(query);
 
+    return StreamBuilder<List<Movie>>(
+      stream: debouncedMovies.stream,
       builder: (context, snapshot) {
         final movies = snapshot.data ?? [];
 
         return ListView.builder(
           itemCount: movies.length,
-
           itemBuilder: (context, index) {
             return _MovieItem(
               movie: movies[index],
-              onMovieSelected: close,
+              onMovieSelected: (context, movie) {
+                clearStreams();
+                close(context, movie);
+              },
             );
           },
         );
@@ -81,16 +114,16 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
 /// ### Movie Item
 /// It is a widget that will be used to show a movie item.
-/// 
+///
 /// #### Properties:
 /// - [movie]: It is the movie to show.
 /// - [onMovieSelected]: It is the function to call when the movie is selected.
-/// 
+///
 /// #### Author:
 /// Gonzalo Quedena
 class _MovieItem extends StatelessWidget {
   final Movie movie;
-  final Function onMovieSelected;
+  final Function(BuildContext, Movie) onMovieSelected;
 
   const _MovieItem({
     required this.movie,
@@ -104,10 +137,8 @@ class _MovieItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => onMovieSelected(context, movie),
-
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-
         child: Row(
           children: [
             SizedBox(
@@ -122,11 +153,7 @@ class _MovieItem extends StatelessWidget {
                 ),
               ),
             ),
-
-            SizedBox(
-              width: 10,
-            ),
-            
+            const SizedBox(width: 10),
             SizedBox(
               width: size.width * 0.7,
               child: Column(
@@ -136,16 +163,16 @@ class _MovieItem extends StatelessWidget {
                     movie.title.value,
                     style: textTheme.titleMedium,
                   ),
-                  (movie.overview.value.length > 100)
-                      ? Text('${movie.overview.value.substring(0, 100)}...')
-                      : Text(movie.overview.value),
+                  Text(
+                    movie.overview.value.length > 100
+                        ? '${movie.overview.value.substring(0, 100)}...'
+                        : movie.overview.value,
+                  ),
                   Row(
                     children: [
                       Icon(Icons.star_half_rounded,
                           color: Colors.yellow.shade800),
-                      SizedBox(
-                        width: 5,
-                      ),
+                      const SizedBox(width: 5),
                       Text(
                         HumanFormats.number(movie.voteAverage.value, 1),
                         style: textTheme.bodyMedium!.copyWith(
@@ -153,7 +180,7 @@ class _MovieItem extends StatelessWidget {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
