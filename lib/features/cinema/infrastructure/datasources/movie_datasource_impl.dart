@@ -30,6 +30,7 @@ class MovieDatasourceImpl extends MoviesDataSource {
   );
 
   @override
+
   /// Refer to [MoviesDatasource.getNowPlaying] for more information.
   Future<List<Movie>> getNowPlayingMovies({int pageNumber = 1}) async {
     final response = await dio.get(
@@ -43,6 +44,7 @@ class MovieDatasourceImpl extends MoviesDataSource {
   }
 
   @override
+
   /// Refer to [MoviesDatasource.getPopular] for more information.
   Future<List<Movie>> getUpcomingMovies({int pageNumber = 1}) async {
     final response = await dio.get(
@@ -56,6 +58,7 @@ class MovieDatasourceImpl extends MoviesDataSource {
   }
 
   @override
+
   /// Refer to [MoviesDatasource.getPopular] for more information.
   Future<List<Movie>> getPopularMovies({int pageNumber = 1}) async {
     final response = await dio.get(
@@ -69,6 +72,7 @@ class MovieDatasourceImpl extends MoviesDataSource {
   }
 
   @override
+
   /// Refer to [MoviesDatasource.getMovieById] for more information.
   Future<Movie> getMovieById(String movieId) async {
     final response = await dio.get('/movie/$movieId');
@@ -82,19 +86,19 @@ class MovieDatasourceImpl extends MoviesDataSource {
 
     return movie;
   }
-  
+
   @override
   Future<List<Movie>> searchMovies(String query) async {
+    if (query.isEmpty) return [];
 
-    final response = await dio.get('/search/movie',
-    queryParameters: {
+    final response = await dio.get('/search/movie', queryParameters: {
       'query': query,
     });
 
     return _jsonToMovies(response.data);
   }
 
-    /// ### JSON to Movies
+  /// ### JSON to Movies
   /// This method is responsible for converting the JSON response from the API to a list of [Movie] entities.
   ///
   /// #### Parameters:
