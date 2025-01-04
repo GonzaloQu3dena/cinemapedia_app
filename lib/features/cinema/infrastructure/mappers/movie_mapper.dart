@@ -11,8 +11,7 @@ import 'package:cinemapedia_app/features/cinema/infrastructure/models/movie_mode
 /// #### Author:
 /// Gonzalo Quedena
 class MovieMapper {
-  
-      /// Converts a [MovieModel] to a [Movie] entity.
+  /// Converts a [MovieModel] to a [Movie] entity.
   static Movie movieModelToEntity(MovieModel movie) => Movie(
         isAdult: false,
         backdropPath: (movie.backdropPath != '')
@@ -26,7 +25,7 @@ class MovieMapper {
         popularity: movie.popularity,
         posterPath: (movie.posterPath != '')
             ? 'https://image.tmdb.org/t/p/w500${movie.posterPath}'
-            : 'no-poster',
+            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoWcWg0E8pSjBNi0TtiZsqu8uD2PAr_K11DA&s',
         releaseDate: movie.releaseDate,
         title: movie.title,
         hasVideo: movie.video,
@@ -34,7 +33,7 @@ class MovieMapper {
         voteCount: movie.voteCount,
       );
 
-      /// Converts a [MovieDetails] to a [Movie] entity.
+  /// Converts a [MovieDetails] to a [Movie] entity.
   static Movie movieDetailToEntity(MovieDetails moviedb) => Movie(
       isAdult: moviedb.adult,
       backdropPath: (moviedb.backdropPath != '')
