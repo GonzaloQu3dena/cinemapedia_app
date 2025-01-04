@@ -18,7 +18,7 @@ import 'package:cinemapedia_app/features/cinema/domain/datasources/movies_dataso
 ///
 /// #### Author:
 /// Gonzalo Quedena
-class MovieDatasourceImpl extends MoviesDatasource {
+class MovieDatasourceImpl extends MoviesDataSource {
   final dio = Dio(
     BaseOptions(
       baseUrl: ApiConstants.baseUrl,
@@ -30,9 +30,8 @@ class MovieDatasourceImpl extends MoviesDatasource {
   );
 
   @override
-
   /// Refer to [MoviesDatasource.getNowPlaying] for more information.
-  Future<List<Movie>> getNowPlaying({int pageNumber = 1}) async {
+  Future<List<Movie>> getNowPlayingMovies({int pageNumber = 1}) async {
     final response = await dio.get(
       '/movie/now_playing',
       queryParameters: {
@@ -44,9 +43,8 @@ class MovieDatasourceImpl extends MoviesDatasource {
   }
 
   @override
-
   /// Refer to [MoviesDatasource.getPopular] for more information.
-  Future<List<Movie>> getUpcoming({int pageNumber = 1}) async {
+  Future<List<Movie>> getUpcomingMovies({int pageNumber = 1}) async {
     final response = await dio.get(
       '/movie/upcoming',
       queryParameters: {
@@ -58,9 +56,8 @@ class MovieDatasourceImpl extends MoviesDatasource {
   }
 
   @override
-
   /// Refer to [MoviesDatasource.getPopular] for more information.
-  Future<List<Movie>> getPopular({int pageNumber = 1}) async {
+  Future<List<Movie>> getPopularMovies({int pageNumber = 1}) async {
     final response = await dio.get(
       '/movie/popular',
       queryParameters: {
@@ -73,11 +70,11 @@ class MovieDatasourceImpl extends MoviesDatasource {
 
   @override
   /// Refer to [MoviesDatasource.getMovieById] for more information.
-  Future<Movie> getMovieById(int id) async {
-    final response = await dio.get('/movie/$id');
+  Future<Movie> getMovieById(String movieId) async {
+    final response = await dio.get('/movie/$movieId');
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to fetch movie with id: $id');
+      throw Exception('Failed to fetch movie with id: $movieId');
     }
 
     final movieDetail = MovieDetails.fromJson(response.data);
@@ -107,5 +104,11 @@ class MovieDatasourceImpl extends MoviesDatasource {
         .toList();
 
     return movies;
+  }
+  
+  @override
+  Future<List<Movie>> searchMovies(String query) {
+    // TODO: implement searchMovies
+    throw UnimplementedError();
   }
 }

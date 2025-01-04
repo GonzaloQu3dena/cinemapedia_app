@@ -66,7 +66,7 @@ final popularMoviesProvider =
 /// #### Author:
 /// Gonzalo Quedena
 final movieByIdProvider =
-    StateNotifierProvider.family<MovieByIdNotifier, Movie?, int>(
+    StateNotifierProvider.family<MovieByIdNotifier, Movie?, String>(
   (ref, movieId) {
     final repository = ref.read(movieRepositoryProvider);
     final getMovieById = GetMovieById(repository);
@@ -266,9 +266,10 @@ class PopularMoviesNotifier extends BaseMoviesNotifier {
 /// Gonzalo Quedena
 class MovieByIdNotifier extends StateNotifier<Movie?> {
   final GetMovieById getMovieById;
-  final int movieId;
+  final String movieId;
 
-  MovieByIdNotifier({required this.getMovieById, required this.movieId}) : super(null) {
+  MovieByIdNotifier({required this.getMovieById, required this.movieId})
+      : super(null) {
     loadMovie();
   }
 

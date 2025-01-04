@@ -20,7 +20,7 @@ abstract class MoviesRepository {
   ///
   /// #### Author:
   /// Gonzalo Quedena
-  Future<List<Movie>> getNowPlaying(int pageNumber);
+  Future<List<Movie>> getNowPlayingMovies(int pageNumber);
 
   /// ### Get the list of upcoming movies by page.
   /// This method will be implemented by the data layer to get the list of upcoming movies by page.
@@ -33,7 +33,7 @@ abstract class MoviesRepository {
   /// 
   /// #### Author:
   /// Gonzalo Quedena
-  Future<List<Movie>> getUpcoming(int pageNumber);
+  Future<List<Movie>> getUpcomingMovies(int pageNumber);
 
   /// ### Get the list of popular movies by page.
   /// This method will be implemented by the data layer to get the list of popular movies by page.
@@ -46,7 +46,7 @@ abstract class MoviesRepository {
   /// 
   /// #### Author:
   /// Gonzalo Quedena
-  Future<List<Movie>> getPopular(int pageNumber);
+  Future<List<Movie>> getPopularMovies(int pageNumber);
 
   /// ### Get the movie by id.
   /// This method will be implemented by the data source layer to get the movie by id.
@@ -59,5 +59,5 @@ abstract class MoviesRepository {
   /// 
   /// #### Author:
   /// Gonzalo Quedena
-  Future<Movie> getMovieById(int id);
+  Future<Movie> getMovieById(String movieId);
 }

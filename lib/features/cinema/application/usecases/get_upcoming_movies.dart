@@ -19,6 +19,6 @@ class GetUpcomingMovies {
 
   /// It is a method that is used to get the list of now playing movies from the repository.
   Future<List<Movie>> call({int pageNumber = 1}) async {
-    return await repository.getUpcoming(pageNumber);
+    return await repository.getUpcomingMovies(pageNumber);
   }
 }

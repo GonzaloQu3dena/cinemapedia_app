@@ -19,7 +19,7 @@ class GetSlideShowMovies {
 
   /// It gets the movies for the slide show between the [start] and [end] indexes.
   Future<List<Movie>> call({int pageNumber = 1, int start = 0, required int end}) async {
-    final movies = await repository.getNowPlaying(pageNumber);
+    final movies = await repository.getNowPlayingMovies(pageNumber);
     return movies.sublist(start, end);
   }
 }

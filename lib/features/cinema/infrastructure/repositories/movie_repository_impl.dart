@@ -15,31 +15,31 @@ import 'package:cinemapedia_app/features/cinema/domain/repositories/movie_reposi
 /// Gonzalo Quedena
 class MovieRepositoryImpl extends MoviesRepository {
 
-  final MoviesDatasource datasource;
+  final MoviesDataSource datasource;
 
   MovieRepositoryImpl(this.datasource);
 
   @override
   /// Refer to [MoviesRepository.getNowPlaying]
-  Future<List<Movie>> getNowPlaying(int pageNumber) {
-    return datasource.getNowPlaying(pageNumber: pageNumber);
+  Future<List<Movie>> getNowPlayingMovies(int pageNumber) {
+    return datasource.getNowPlayingMovies(pageNumber: pageNumber);
   }
   
   @override
   /// Refer to [MoviesRepository.getUpcoming]
-  Future<List<Movie>> getUpcoming(int pageNumber) {
-    return datasource.getUpcoming(pageNumber: pageNumber);
+  Future<List<Movie>> getUpcomingMovies(int pageNumber) {
+    return datasource.getUpcomingMovies(pageNumber: pageNumber);
   }
 
   @override
   /// Refer to [MoviesRepository.getPopular]
-  Future<List<Movie>> getPopular(int pageNumber) {
-    return datasource.getPopular(pageNumber: pageNumber);
+  Future<List<Movie>> getPopularMovies(int pageNumber) {
+    return datasource.getPopularMovies(pageNumber: pageNumber);
   }
   
   @override
   /// Refer to [MoviesRepository.getMovieById]
-  Future<Movie> getMovieById(int id) {
-    return datasource.getMovieById(id);
+  Future<Movie> getMovieById(String movieId) {
+    return datasource.getMovieById(movieId);
   }
 }

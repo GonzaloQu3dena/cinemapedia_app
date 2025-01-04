@@ -42,7 +42,7 @@ class MoviePageState extends ConsumerState<MoviePage> {
   /// Loads the movie and its actors by ID.
   void _loadMovie() {
     final movieId = int.tryParse(widget.movideId) ?? 0;
-    ref.read(cinemaControllerProvider.notifier).loadMovieById(movieId);
+    ref.read(cinemaControllerProvider.notifier).loadMovieById(movieId.toString());
     ref.read(cinemaControllerProvider.notifier).loadActorsByMovie(movieId);
   }
 

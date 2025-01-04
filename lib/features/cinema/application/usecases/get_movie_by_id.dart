@@ -17,7 +17,7 @@ class GetMovieById {
 
   GetMovieById(this.repository);
 
-  Future<Movie> call(int movieId) async {
+  Future<Movie> call(String movieId) async {
     return await repository.getMovieById(movieId);
   }
 }

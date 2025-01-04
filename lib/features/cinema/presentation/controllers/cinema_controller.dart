@@ -151,7 +151,7 @@ class CinemaController extends StateNotifier<CinemaState> {
   ///
   /// #### Parameters:
   /// - [movieId]: The ID of the movie to load.
-  Future<void> loadMovieById(int movieId) async {
+  Future<void> loadMovieById(String movieId) async {
     final movieNotifier = _ref.read(movieByIdProvider(movieId).notifier);
     await movieNotifier.loadMovie();
     final movie = _ref.read(movieByIdProvider(movieId));
