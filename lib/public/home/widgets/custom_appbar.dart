@@ -45,9 +45,7 @@ class CustomAppbar extends ConsumerWidget {
             Icons.movie_outlined,
             color: colors.primary,
           ),
-          
           const SizedBox(width: 5),
-
           Text(
             'Cinemapedia',
             style: titleStyle,
@@ -61,22 +59,18 @@ class CustomAppbar extends ConsumerWidget {
   Widget _buildSearchButton(BuildContext context, WidgetRef ref) {
     return IconButton(
       onPressed: () {
-        final movieRepository = ref.read(movieRepositoryProvider);
+        ///final searchedMovies = ref.read(searchedMoviesProvider);
         final searchQuery = ref.read(searchQueryProvider);
 
         showSearch<Movie?>(
           query: searchQuery,
           context: context,
-          
           delegate: SearchMovieDelegate(
-            searchMovieCallback: (query) {
-              ref.read(searchQueryProvider.notifier).update((state) => query);
-              return movieRepository.searchMovies(query);
-            } 
+            searchMovieCallback:
+                ref.read(searchedMoviesProvider.notifier).searchMoviesByQuery,
           ),
         ).then(
           (movie) {
-          
             if (movie != null && context.mounted) {
               context.push('/movie/${movie.id}');
             }
