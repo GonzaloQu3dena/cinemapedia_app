@@ -82,8 +82,19 @@ class MovieDatasourceImpl extends MoviesDataSource {
 
     return movie;
   }
+  
+  @override
+  Future<List<Movie>> searchMovies(String query) async {
 
-  /// ### JSON to Movies
+    final response = await dio.get('/search/movie',
+    queryParameters: {
+      'query': query,
+    });
+
+    return _jsonToMovies(response.data);
+  }
+
+    /// ### JSON to Movies
   /// This method is responsible for converting the JSON response from the API to a list of [Movie] entities.
   ///
   /// #### Parameters:
@@ -104,11 +115,5 @@ class MovieDatasourceImpl extends MoviesDataSource {
         .toList();
 
     return movies;
-  }
-  
-  @override
-  Future<List<Movie>> searchMovies(String query) {
-    // TODO: implement searchMovies
-    throw UnimplementedError();
   }
 }

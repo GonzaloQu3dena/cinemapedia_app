@@ -4,60 +4,27 @@ import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
 /// This class is an abstract class that will be implemented by the data layer.
 ///
 /// #### Methods:
-/// - [getMoviesByPage] - This method will be implemented by the data layer to get the list of movies by page.
-///
+/// - [getNowPlayingMovies]: Get the list of movies by page.
+/// - [getUpcomingMovies]: Get the list of upcoming movies by page.
+/// - [getPopularMovies]: Get the list of popular movies by page.
+/// - [getMovieById]: Get the movie by id.
+/// - [searchMovies]: Search movies.
+/// 
 /// #### Author:
 /// Gonzalo Quedena
 abstract class MoviesRepository {
-  /// ### Get the list of movies by page.
-  /// This method will be implemented by the data layer to get the list of movies by page.
-  ///
-  /// #### Parameters:
-  /// - [pageNumber]: The page number to get the list of movies.
-  ///
-  /// #### Returns:
-  /// - A list of movies.
-  ///
-  /// #### Author:
-  /// Gonzalo Quedena
+  /// Refer to [MovieDataSources.getNowPlayingMovies]
   Future<List<Movie>> getNowPlayingMovies(int pageNumber);
 
-  /// ### Get the list of upcoming movies by page.
-  /// This method will be implemented by the data layer to get the list of upcoming movies by page.
-  /// 
-  /// #### Parameters:
-  /// - [pageNumber]: The page number to get the list of movies.
-  /// 
-  /// #### Returns:
-  /// - A list of movies.
-  /// 
-  /// #### Author:
-  /// Gonzalo Quedena
+  /// Refer to [MovieDataSources.getUpcomingMovies]
   Future<List<Movie>> getUpcomingMovies(int pageNumber);
 
-  /// ### Get the list of popular movies by page.
-  /// This method will be implemented by the data layer to get the list of popular movies by page.
-  /// 
-  /// #### Parameters:
-  /// - [pageNumber]: The page number to get the list of movies.
-  /// 
-  /// #### Returns:
-  /// - A list of movies.
-  /// 
-  /// #### Author:
-  /// Gonzalo Quedena
+  /// Refer to [MovieDataSources.getPopularMovies]
   Future<List<Movie>> getPopularMovies(int pageNumber);
 
-  /// ### Get the movie by id.
-  /// This method will be implemented by the data source layer to get the movie by id.
-  /// 
-  /// #### Parameters:
-  /// - [id]: The id of the movie.
-  /// 
-  /// #### Returns:
-  /// - A movie.
-  /// 
-  /// #### Author:
-  /// Gonzalo Quedena
+  /// Refer to [MovieDataSources.getMovieById]
   Future<Movie> getMovieById(String movieId);
+
+  /// Refer to [MovieDataSources.searchMovies]
+  Future<List<Movie>> searchMovies(String query);
 }
