@@ -7,10 +7,35 @@ import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
 
 typedef SearchMovieCallback = Future<List<Movie>> Function(String query);
 
+/// ### Search Movie Delegate
+/// It's a delegate to search movies.
+/// 
+/// #### Properties:
+/// - [searchMovieCallback]: Callback to search movies.
+/// - [initialMovies]: Initial list of movies.
+/// - [debouncedMovies]: Stream controller to debounce the search.
+/// - [isLoadingStream]: Stream controller to show the loading state.
+/// - [_debounceTimer]: Timer to debounce the search.
+/// - [_isClosed]: Flag to know if the streams are closed.
+/// 
+/// #### Methods:
+/// - [clearStreams]: Clear the streams.
+/// - [_onQueryChanged]: Callback to search movies.
+/// - [_buildResultsAndSuggestions]: Build the results and suggestions.
+/// - [buildActions]: Build the actions.
+/// - [buildLeading]: Build the leading.
+/// - [buildResults]: Build the results.
+/// - [buildSuggestions]: Build the suggestions.
+/// 
+/// #### Author:
+/// Gonzalo Quedena
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMovieCallback searchMovieCallback;
   List<Movie> initialMovies;
+
   final StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
+  final StreamController<bool> isLoadingStream = StreamController.broadcast();
+
   Timer? _debounceTimer;
   bool _isClosed = false;
 
@@ -22,17 +47,21 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   void clearStreams() {
     if (!_isClosed) {
       debouncedMovies.close();
+      isLoadingStream.close();
       _isClosed = true;
     }
   }
 
   void _onQueryChanged(String query) {
+    isLoadingStream.add(true);
+
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
       if (_isClosed) return;
       final movies = await searchMovieCallback(query);
       initialMovies = movies;
       debouncedMovies.add(movies);
+      isLoadingStream.add(false);
     });
   }
 
@@ -61,13 +90,29 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
-      if (query.isNotEmpty)
-        FadeIn(
-          child: IconButton(
-            onPressed: () => query = '',
-            icon: const Icon(Icons.clear),
-          ),
-        ),
+      StreamBuilder<bool>(
+        initialData: false,
+        stream: isLoadingStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data ?? false) {
+            return SpinPerfect(
+              duration: const Duration(seconds: 1),
+              spins: 10,
+              child: IconButton(
+                onPressed: () => query = '',
+                icon: const Icon(Icons.refresh_rounded),
+              ),
+            );
+          }
+
+          return FadeIn(
+            child: IconButton(
+              onPressed: () => query = '',
+              icon: const Icon(Icons.clear),
+            ),
+          );
+        },
+      ),
     ];
   }
 
