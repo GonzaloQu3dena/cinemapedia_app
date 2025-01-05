@@ -7,10 +7,10 @@ import 'package:cinemapedia_app/features/cinema/presentation/controllers/cinema_
 
 /// ### Movie Page
 /// This page displays detailed information about a specific movie.
-/// 
+///
 /// #### Properties:
 /// - [movideId]: The ID of the movie to display.
-/// 
+///
 /// #### Author:
 /// Gonzalo Quedena
 class MoviePage extends ConsumerStatefulWidget {
@@ -29,7 +29,7 @@ class MoviePage extends ConsumerStatefulWidget {
 
 /// ### Movie Page State
 /// This is the state of the Movie Page, it loads the movie and its actors when the view is initialized.
-/// 
+///
 /// #### Author:
 /// Gonzalo Quedena
 class MoviePageState extends ConsumerState<MoviePage> {
@@ -42,7 +42,9 @@ class MoviePageState extends ConsumerState<MoviePage> {
   /// Loads the movie and its actors by ID.
   void _loadMovie() {
     final movieId = int.tryParse(widget.movideId) ?? 0;
-    ref.read(cinemaControllerProvider.notifier).loadMovieById(movieId.toString());
+    ref
+        .read(cinemaControllerProvider.notifier)
+        .loadMovieById(movieId.toString());
     ref.read(cinemaControllerProvider.notifier).loadActorsByMovie(movieId);
   }
 
@@ -73,10 +75,10 @@ class MoviePageState extends ConsumerState<MoviePage> {
 
 /// ### Movie Detail
 /// This widget displays detailed information about the movie.
-/// 
+///
 /// #### Properties:
 /// - [movie]: The movie to display.
-/// 
+///
 /// #### Author:
 /// Gonzalo Quedena
 class _MovieDetail extends StatelessWidget {
@@ -156,10 +158,10 @@ class _MovieDetail extends StatelessWidget {
 
 /// ### Custom Sliver App Bar
 /// This widget displays a custom sliver app bar with the movie's poster and title.
-/// 
+///
 /// #### Properties:
 /// - [movie]: The movie to display.
-/// 
+///
 /// #### Author:
 /// Gonzalo Quedena
 class _CustomSliverAppBar extends StatelessWidget {
@@ -175,7 +177,7 @@ class _CustomSliverAppBar extends StatelessWidget {
 
     return SliverAppBar(
       backgroundColor: Colors.black,
-      expandedHeight: size.height * 0.7,
+      expandedHeight: size.height * 0.6,
       foregroundColor: Colors.white,
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -234,10 +236,10 @@ class _CustomSliverAppBar extends StatelessWidget {
 
 /// ### Actors By Movie
 /// This widget displays a list of actors for the given movie.
-/// 
+///
 /// #### Properties:
 /// - [movieId]: The ID of the movie to fetch actors for.
-/// 
+///
 /// #### Author:
 /// Gonzalo Quedena
 class _ActorsByMovie extends ConsumerWidget {
