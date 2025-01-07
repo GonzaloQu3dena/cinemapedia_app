@@ -1,3 +1,4 @@
+import 'package:cinemapedia_app/features/cinema/application/providers/local_storage_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
 import 'package:cinemapedia_app/features/cinema/domain/entities/actor.dart';
@@ -6,7 +7,7 @@ import 'package:cinemapedia_app/features/cinema/application/providers/actors_pro
 
 /// ### Cinema Controller Provider
 /// It is a StateNotifierProvider that provides an instance of CinemaController.
-/// 
+///
 /// #### Author:
 /// Gonzalo Quedena
 final cinemaControllerProvider =
@@ -18,7 +19,7 @@ final cinemaControllerProvider =
 
 /// ### Cinema State
 /// It is the state of the cinema page. This state contains the list of movies that are currently playing in theaters.
-/// 
+///
 /// #### Properties:
 /// - [nowPlayingMovies]: The list of movies that are currently playing in theaters.
 /// - [slideShowMovies]: The list of movies for the slide show.
@@ -26,10 +27,10 @@ final cinemaControllerProvider =
 /// - [popularMovies]: The list of popular movies.
 /// - [selectedMovie]: The movie that is currently selected.
 /// - [actorsByMovie]: The list of actors for the selected movie.
-/// 
+///
 /// #### Methods:
 /// - [copyWith]: It returns a new instance of the state with the new values.
-/// 
+///
 /// #### Author:
 /// Gonzalo Quedena
 class CinemaState {
@@ -71,10 +72,10 @@ class CinemaState {
 
 /// ### Cinema Controller
 /// It is a controller that manages the state of the cinema page.
-/// 
+///
 /// #### Properties:
 /// - [_ref]: The reference to the provider container.
-/// 
+///
 /// #### Methods:
 /// - [loadMovies]: It loads the movies that are currently playing in theaters.
 /// - [loadSlideMovies]: It loads the movies for the slide show.
@@ -85,7 +86,7 @@ class CinemaState {
 /// - [loadNextPagePopularMovies]: It loads the next page of popular movies.
 /// - [loadMovieById]: It loads a movie by its ID and updates the state with the selected movie.
 /// - [loadActorsByMovie]: It loads the actors for a movie by its ID and updates the state with the actors.
-/// 
+///
 /// #### Author:
 /// Gonzalo Quedena
 class CinemaController extends StateNotifier<CinemaState> {
@@ -168,5 +169,14 @@ class CinemaController extends StateNotifier<CinemaState> {
 
     final actors = _ref.read(actorsByMovieProvider)[movieId.toString()] ?? [];
     state = state.copyWith(actorsByMovie: actors);
+  }
+
+  /// Toggles the favorite status of a movie.
+  ///
+  /// #### Parameters:
+  /// - [movie]: The movie to toggle the favorite status.
+  Future<void> toggleFavoriteMovie(Movie movie) async {
+    final localStorageRepository = _ref.read(localStorageRepositoryProvider);
+    await localStorageRepository.toggleFavoriteMovie(movie);
   }
 }

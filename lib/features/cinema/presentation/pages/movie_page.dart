@@ -151,13 +151,13 @@ class _MovieDetail extends StatelessWidget {
 ///
 /// #### Author:
 /// Gonzalo Quedena
-class _CustomSliverAppBar extends StatelessWidget {
+class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
 
   const _CustomSliverAppBar({required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
 
     return SliverAppBar(
@@ -180,7 +180,9 @@ class _CustomSliverAppBar extends StatelessWidget {
               const EdgeInsets.only(right: 8.0, top: 0.0), // Ajuste del padding
           child: IconButton(
             onPressed: () {
-              // TODO: Favorites toggle
+              ref
+                  .read(cinemaControllerProvider.notifier)
+                  .toggleFavoriteMovie(movie);
             },
             icon: const Icon(Icons.favorite_border),
           ),
