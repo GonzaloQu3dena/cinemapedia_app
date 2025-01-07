@@ -22,7 +22,7 @@ class MovieList extends StatelessWidget {
       itemBuilder: (context, index) {
         final movie = movies[index];
         return ListTile(
-          title: Text(movie.title.value),
+          title: Text(movie.title),
         );
       },
     );

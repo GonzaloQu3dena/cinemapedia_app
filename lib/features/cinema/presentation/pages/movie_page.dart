@@ -42,7 +42,9 @@ class MoviePageState extends ConsumerState<MoviePage> {
   /// Loads the movie and its actors by ID.
   void _loadMovie() {
     final movieId = int.tryParse(widget.movieId) ?? 0;
-    ref.read(cinemaControllerProvider.notifier).loadMovieById(movieId.toString());
+    ref
+        .read(cinemaControllerProvider.notifier)
+        .loadMovieById(movieId.toString());
     ref.read(cinemaControllerProvider.notifier).loadActorsByMovie(movieId);
   }
 
@@ -110,8 +112,8 @@ class _MovieDetail extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(movie.title.value, style: textStyle.titleLarge),
-                    Text(movie.overview.value),
+                    Text(movie.title, style: textStyle.titleLarge),
+                    Text(movie.overview),
                   ],
                 ),
               ),
@@ -125,7 +127,7 @@ class _MovieDetail extends StatelessWidget {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: Chip(
-                  label: Text(genre.value),
+                  label: Text(genre.toString()),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -163,7 +165,8 @@ class _CustomSliverAppBar extends StatelessWidget {
       expandedHeight: size.height * 0.6,
       foregroundColor: Colors.white,
       leading: Padding(
-        padding: const EdgeInsets.only(left: 8.0, top: 0.0), // Ajuste del padding
+        padding:
+            const EdgeInsets.only(left: 8.0, top: 0.0), // Ajuste del padding
         child: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () {
@@ -173,7 +176,8 @@ class _CustomSliverAppBar extends StatelessWidget {
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 8.0, top: 0.0), // Ajuste del padding
+          padding:
+              const EdgeInsets.only(right: 8.0, top: 0.0), // Ajuste del padding
           child: IconButton(
             onPressed: () {
               // TODO: Favorites toggle
@@ -185,7 +189,7 @@ class _CustomSliverAppBar extends StatelessWidget {
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         title: Text(
-          movie.title.value,
+          movie.title,
           style: const TextStyle(fontSize: 20, color: Colors.white),
           textAlign: TextAlign.start,
         ),
@@ -227,13 +231,13 @@ class _CustomSliverAppBar extends StatelessWidget {
 
 /// ### Custom Gradient
 /// This widget displays a custom gradient.
-/// 
+///
 /// #### Properties:
 /// - [begin]: The alignment of the gradient's start.
 /// - [end]: The alignment of the gradient's end.
 /// - [stops]: The stops of the gradient.
 /// - [colors]: The colors of the gradient.
-/// 
+///
 /// #### Author:
 /// Gonzalo Quedena
 class _CustomGradient extends StatelessWidget {

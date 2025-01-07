@@ -17,7 +17,7 @@ class MovieMapper {
         backdropPath: (movie.backdropPath != '')
             ? 'https://image.tmdb.org/t/p/w500${movie.backdropPath}'
             : 'https://linnea.com.ar/wp-content/uploads/2018/09/404PosterNotFound.jpg',
-        genreIds: movie.genreIds.map((e) => e.toString()).toList(),
+        genreIds: movie.genreIds,
         id: movie.id,
         originalLanguage: movie.originalLanguage,
         originalTitle: movie.originalTitle,
@@ -39,7 +39,7 @@ class MovieMapper {
       backdropPath: (moviedb.backdropPath != '')
           ? 'https://image.tmdb.org/t/p/w500${moviedb.backdropPath}'
           : 'https://sd.keepcalms.com/i-w600/keep-calm-poster-not-found.jpg',
-      genreIds: moviedb.genres.map((e) => e.name).toList(),
+      genreIds: moviedb.genres.map((e) => e.id).toList(),
       id: moviedb.id,
       originalLanguage: moviedb.originalLanguage,
       originalTitle: moviedb.originalTitle,

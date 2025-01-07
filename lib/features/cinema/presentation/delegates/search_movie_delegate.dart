@@ -178,20 +178,20 @@ class _MovieItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    movie.title.value,
+                    movie.title,
                     style: textTheme.titleMedium,
                   ),
                   Text(
-                    movie.overview.value.length > 100
-                        ? '${movie.overview.value.substring(0, 100)}...'
-                        : movie.overview.value,
+                    movie.overview.length > 100
+                        ? '${movie.overview.substring(0, 100)}...'
+                        : movie.overview,
                   ),
                   Row(
                     children: [
                       Icon(Icons.star_half_rounded, color: Colors.yellow.shade800),
                       const SizedBox(width: 5),
                       Text(
-                        HumanFormats.number(movie.voteAverage.value, 1),
+                        HumanFormats.number(movie.voteAverage, 1),
                         style: textTheme.bodyMedium!.copyWith(
                           color: Colors.yellow.shade900,
                         ),

@@ -162,7 +162,7 @@ class _Slide extends StatelessWidget {
           SizedBox(
             width: 150,
             child: Text(
-              movie.title.value,
+              movie.title,
               maxLines: 2,
               style: textStyles.titleSmall,
             ),
@@ -185,7 +185,7 @@ class _Slide extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  HumanFormats.number(movie.popularity.value),
+                  HumanFormats.number(movie.popularity),
                   style: textStyles.bodySmall,
                 ),
               ],
