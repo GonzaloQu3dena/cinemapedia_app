@@ -9,18 +9,18 @@ import 'package:cinemapedia_app/features/cinema/presentation/controllers/cinema_
 /// This page displays detailed information about a specific movie.
 ///
 /// #### Properties:
-/// - [movideId]: The ID of the movie to display.
+/// - [movieId]: The ID of the movie to display.
 ///
 /// #### Author:
 /// Gonzalo Quedena
 class MoviePage extends ConsumerStatefulWidget {
   static const name = "movie-page";
 
-  final String movideId;
+  final String movieId;
 
   const MoviePage({
     super.key,
-    required this.movideId,
+    required this.movieId,
   });
 
   @override
@@ -41,10 +41,8 @@ class MoviePageState extends ConsumerState<MoviePage> {
 
   /// Loads the movie and its actors by ID.
   void _loadMovie() {
-    final movieId = int.tryParse(widget.movideId) ?? 0;
-    ref
-        .read(cinemaControllerProvider.notifier)
-        .loadMovieById(movieId.toString());
+    final movieId = int.tryParse(widget.movieId) ?? 0;
+    ref.read(cinemaControllerProvider.notifier).loadMovieById(movieId.toString());
     ref.read(cinemaControllerProvider.notifier).loadActorsByMovie(movieId);
   }
 
@@ -106,51 +104,38 @@ class _MovieDetail extends StatelessWidget {
                   width: size.width * 0.3,
                 ),
               ),
-              const SizedBox(
-                width: 10,
-              ),
+              const SizedBox(width: 10),
               SizedBox(
                 width: (size.width - 40) * 0.7,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      movie.title.value,
-                      style: textStyle.titleLarge,
-                    ),
-                    Text(
-                      movie.overview.value,
-                    ),
+                    Text(movie.title.value, style: textStyle.titleLarge),
+                    Text(movie.overview.value),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(8),
           child: Wrap(
-            children: [
-              ...movie.genreIds.map(
-                (gender) => Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  child: Chip(
-                    label: Text(gender.value),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+            children: movie.genreIds.map((genre) {
+              return Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: Chip(
+                  label: Text(genre.value),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-              )
-            ],
+              );
+            }).toList(),
           ),
         ),
-        _ActorsByMovie(
-          movieId: movie.id.toString(),
-        ),
-        const SizedBox(
-          height: 50,
-        ),
+        _ActorsByMovie(movieId: movie.id.toString()),
+        const SizedBox(height: 50),
       ],
     );
   }
@@ -167,9 +152,7 @@ class _MovieDetail extends StatelessWidget {
 class _CustomSliverAppBar extends StatelessWidget {
   final Movie movie;
 
-  const _CustomSliverAppBar({
-    required this.movie,
-  });
+  const _CustomSliverAppBar({required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -180,13 +163,9 @@ class _CustomSliverAppBar extends StatelessWidget {
       expandedHeight: size.height * 0.6,
       foregroundColor: Colors.white,
       leading: Padding(
-        padding: const EdgeInsets.only(
-          left: 8.0,
-        ),
+        padding: const EdgeInsets.only(left: 8.0, top: 0.0), // Ajuste del padding
         child: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -194,34 +173,20 @@ class _CustomSliverAppBar extends StatelessWidget {
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(
-            right: 8.0,
-          ),
+          padding: const EdgeInsets.only(right: 8.0, top: 0.0), // Ajuste del padding
           child: IconButton(
             onPressed: () {
               // TODO: Favorites toggle
             },
-            icon: const Icon(
-              Icons.favorite_border,
-            ),
-            // icon: Icon(
-            //   Icons.favorite_rounded,
-            //   color: Colors.red,
-            // ),
+            icon: const Icon(Icons.favorite_border),
           ),
         ),
       ],
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 5,
-        ),
+        titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         title: Text(
           movie.title.value,
-          style: const TextStyle(
-            fontSize: 20,
-            color: Colors.white,
-          ),
+          style: const TextStyle(fontSize: 20, color: Colors.white),
           textAlign: TextAlign.start,
         ),
         background: Stack(
@@ -239,19 +204,19 @@ class _CustomSliverAppBar extends StatelessWidget {
             _CustomGradient(
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
-              stops: [0.0, 0.4],
-              colors: [Colors.black54, Colors.transparent],
+              stops: const [0.0, 0.4],
+              colors: const [Colors.black54, Colors.transparent],
             ),
             _CustomGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              stops: [0.7, 1.0],
-              colors: [Colors.transparent, Colors.black87],
+              stops: const [0.7, 1.0],
+              colors: const [Colors.transparent, Colors.black87],
             ),
             _CustomGradient(
               begin: Alignment.topLeft,
-              stops: [0.0, 0.4],
-              colors: [Colors.black87, Colors.transparent],
+              stops: const [0.0, 0.4],
+              colors: const [Colors.black87, Colors.transparent],
             ),
           ],
         ),
@@ -315,7 +280,7 @@ class _ActorsByMovie extends ConsumerWidget {
   const _ActorsByMovie({required this.movieId});
 
   @override
-  Widget build(BuildContext context, ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final actorsByMovie = ref.watch(actorsByMovieProvider);
 
     if (actorsByMovie[movieId] == null) {
@@ -351,9 +316,7 @@ class _ActorsByMovie extends ConsumerWidget {
                 ),
 
                 // Actor Name
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
 
                 Text(
                   actor.name,
