@@ -20,13 +20,11 @@ const colors = <Color>[
 /// #### Author:
 /// Gonzalo Quedena
 class AppTheme {
-  final bool isDarkMode;
   final int selectedColor;
 
-  /// The selectedColor must be greater than 0 and less than the length of the colorList and the isDarkMode must be a boolean.
+  /// The selectedColor must be greater than 0 and less than the length of the colorList.
   AppTheme({
     this.selectedColor = 0,
-    this.isDarkMode = false,
   })  : assert(
           selectedColor >= 0,
           'selectedColor must be greater than 0',
@@ -36,26 +34,33 @@ class AppTheme {
           'selectedColor must be less than ${colors.length - 1}',
         );
 
-  /// Returns the theme configuration. The theme is based on the selected color and the dark mode flag.
-  ThemeData theme() {
-    final baseTheme = isDarkMode ? DarkTheme.theme : LightTheme.theme;
+  /// Returns the light theme configuration based on the selected color.
+  ThemeData lightTheme() {
+    final baseTheme = LightTheme.theme;
 
-    ThemeData newTheme = baseTheme.copyWith(
+    return baseTheme.copyWith(
       colorScheme: baseTheme.colorScheme.copyWith(
         primary: colors[selectedColor],
       ),
     );
+  }
 
-    return newTheme;
+  /// Returns the dark theme configuration based on the selected color.
+  ThemeData darkTheme() {
+    final baseTheme = DarkTheme.theme;
+
+    return baseTheme.copyWith(
+      colorScheme: baseTheme.colorScheme.copyWith(
+        primary: colors[selectedColor],
+      ),
+    );
   }
 
   /// Used to create a new instance of the AppTheme class with the new optional values.
   AppTheme copyWith({
     int? selectedColor,
-    bool? isDarkMode,
   }) =>
       AppTheme(
-        isDarkMode: isDarkMode ?? this.isDarkMode,
         selectedColor: selectedColor ?? this.selectedColor,
       );
 }
