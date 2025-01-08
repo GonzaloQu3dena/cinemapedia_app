@@ -238,8 +238,8 @@ class PopularMoviesNotifier extends BaseMoviesNotifier {
   }
 
   @override
-  Future<void> loadNextPage() async {
-    if (isLoading) return;
+  Future<List<Movie>> loadNextPage() async {
+    if (isLoading) return [];
 
     isLoading = true;
 
@@ -249,6 +249,8 @@ class PopularMoviesNotifier extends BaseMoviesNotifier {
 
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
+
+    return movies;
   }
 }
 

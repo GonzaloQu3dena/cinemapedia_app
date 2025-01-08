@@ -1,6 +1,7 @@
 import 'package:cinemapedia_app/features/cinema/presentation/pages/cinema_page.dart';
 import 'package:cinemapedia_app/features/cinema/presentation/pages/favorite_page.dart';
 import 'package:cinemapedia_app/features/cinema/presentation/pages/movie_page.dart';
+import 'package:cinemapedia_app/features/cinema/presentation/pages/popular_page.dart';
 import 'package:cinemapedia_app/public/home/pages/home_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,7 +15,6 @@ final appRouter = GoRouter(
         );
       },
       routes: [
-
         GoRoute(
           path: '/',
           builder: (context, state) {
@@ -34,13 +34,18 @@ final appRouter = GoRouter(
             ),
           ],
         ),
-
         GoRoute(
           path: '/favorites',
           builder: (context, state) {
             return const FavoritePage();
           },
         ),
+        GoRoute(
+          path: '/popular',
+          builder: (context, state) {
+            return const PopularPage();
+          },
+        )
       ],
     ),
 
