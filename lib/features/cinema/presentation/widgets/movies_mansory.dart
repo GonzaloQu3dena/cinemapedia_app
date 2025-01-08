@@ -3,6 +3,15 @@ import 'package:cinemapedia_app/features/cinema/presentation/widgets/movie_poste
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+/// ### Movies Mansory
+/// This widget will show the movies in a mansory layout.
+/// 
+/// #### Properties:
+/// - [movies]: List of movies to show.
+/// - [loadNextpage]: Callback to load the next page.
+/// 
+/// #### Author:
+/// Gonzalo Quedena
 class MoviesMansory extends StatefulWidget {
   final List<Movie> movies;
   final VoidCallback? loadNextpage;
@@ -16,7 +25,18 @@ class MoviesMansory extends StatefulWidget {
   @override
   State<MoviesMansory> createState() => _MoviesMansoryState();
 }
-
+/// ### Movies Mansory State
+/// This is the state of the [MoviesMansory] widget.
+/// 
+/// #### Properties:
+/// - [scrollController]: Scroll controller to listen the scroll events.
+/// 
+/// #### Methods:
+/// - [initState]: Initialize the state.
+/// - [dispose]: Dispose the state.
+/// 
+/// #### Author:
+/// Gonzalo Quedena
 class _MoviesMansoryState extends State<MoviesMansory> {
   final scrollController = ScrollController();
 
