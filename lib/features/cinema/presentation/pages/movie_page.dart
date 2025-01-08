@@ -1,3 +1,4 @@
+import 'package:cinemapedia_app/features/cinema/application/providers/favorite_movies_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -179,11 +180,13 @@ class _CustomSliverAppBar extends ConsumerWidget {
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 8.0, top: 0.0),
-          child: IconButton(  
-            onPressed: () {
-              ref
-                  .read(cinemaControllerProvider.notifier)
-                  .toggleFavoriteMovie(movie);
+          child: IconButton(
+            onPressed: () async {
+              await ref
+                  .read(favoriteMoviesProvider.notifier)
+                  .toggleFavorite(movie);
+
+              ref.invalidate(isFavoriteProvider(movie.id));
             },
             icon: isFavoriteFuture.when(
               loading: () => const CircularProgressIndicator(

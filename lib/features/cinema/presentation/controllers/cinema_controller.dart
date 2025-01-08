@@ -178,7 +178,5 @@ class CinemaController extends StateNotifier<CinemaState> {
   Future<void> toggleFavoriteMovie(Movie movie) async {
     final localStorageRepository = _ref.read(localStorageRepositoryProvider);
     await localStorageRepository.toggleFavoriteMovie(movie);
-
-    _ref.invalidate(localStorageRepositoryProvider);
   }
 }
