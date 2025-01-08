@@ -1,17 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cinemapedia_app/features/cinema/application/providers/favorite_movies_provider.dart';
 
-class FavoritePage extends StatelessWidget {
-
+class FavoritePage extends ConsumerStatefulWidget {
   const FavoritePage({super.key});
 
   @override
+  FavoritePageState createState() => FavoritePageState();
+}
+
+class FavoritePageState extends ConsumerState<FavoritePage> {
+  @override
+  void initState() {
+    super.initState();
+
+    ref.read(favoriteMoviesProvider.notifier).loadNextPage();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final favoriteMovies = ref.watch(favoriteMoviesProvider).values.toList();
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Favorite Movies'),
-      ),
-      body: Center(
-        child: Text('Favorites'),
+      body: ListView.builder(
+        itemCount: favoriteMovies.length,
+        itemBuilder: (context, index) {
+          final movie = favoriteMovies[index];
+
+          return ListTile(
+            title: Text(movie.title),
+          );
+        },
       ),
     );
   }

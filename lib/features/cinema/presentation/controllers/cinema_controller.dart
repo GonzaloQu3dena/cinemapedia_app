@@ -1,9 +1,9 @@
-import 'package:cinemapedia_app/features/cinema/application/providers/local_storage_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
 import 'package:cinemapedia_app/features/cinema/domain/entities/actor.dart';
 import 'package:cinemapedia_app/features/cinema/application/providers/movies_provider.dart';
 import 'package:cinemapedia_app/features/cinema/application/providers/actors_provider.dart';
+import 'package:cinemapedia_app/features/cinema/application/providers/local_storage_provider.dart';
 
 /// ### Cinema Controller Provider
 /// It is a StateNotifierProvider that provides an instance of CinemaController.
@@ -178,5 +178,7 @@ class CinemaController extends StateNotifier<CinemaState> {
   Future<void> toggleFavoriteMovie(Movie movie) async {
     final localStorageRepository = _ref.read(localStorageRepositoryProvider);
     await localStorageRepository.toggleFavoriteMovie(movie);
+
+    _ref.invalidate(localStorageRepositoryProvider);
   }
 }

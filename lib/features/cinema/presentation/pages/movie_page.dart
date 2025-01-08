@@ -3,6 +3,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia_app/features/cinema/domain/entities/movie.dart';
 import 'package:cinemapedia_app/features/cinema/application/providers/actors_provider.dart';
+import 'package:cinemapedia_app/features/cinema/application/providers/is_favorite_provider.dart';
 import 'package:cinemapedia_app/features/cinema/presentation/controllers/cinema_controller.dart';
 
 /// ### Movie Page
@@ -158,6 +159,8 @@ class _CustomSliverAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
+
     final size = MediaQuery.of(context).size;
 
     return SliverAppBar(
@@ -165,8 +168,7 @@ class _CustomSliverAppBar extends ConsumerWidget {
       expandedHeight: size.height * 0.6,
       foregroundColor: Colors.white,
       leading: Padding(
-        padding:
-            const EdgeInsets.only(left: 8.0, top: 0.0), // Ajuste del padding
+        padding: const EdgeInsets.only(left: 8.0, top: 0.0),
         child: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () {
@@ -176,15 +178,23 @@ class _CustomSliverAppBar extends ConsumerWidget {
       ),
       actions: [
         Padding(
-          padding:
-              const EdgeInsets.only(right: 8.0, top: 0.0), // Ajuste del padding
-          child: IconButton(
+          padding: const EdgeInsets.only(right: 8.0, top: 0.0),
+          child: IconButton(  
             onPressed: () {
               ref
                   .read(cinemaControllerProvider.notifier)
                   .toggleFavoriteMovie(movie);
             },
-            icon: const Icon(Icons.favorite_border),
+            icon: isFavoriteFuture.when(
+              loading: () => const CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+              data: (isFavorite) => isFavorite
+                  ? const Icon(Icons.favorite_rounded, color: Colors.red)
+                  : const Icon(Icons.favorite_border),
+              error: (_, __) => throw UnimplementedError(),
+            ),
+            //const Icon(Icons.favorite_border),
           ),
         ),
       ],
